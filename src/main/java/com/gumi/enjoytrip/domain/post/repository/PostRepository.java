@@ -29,4 +29,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     void setNotice(long id, boolean isNotice);
 
     void increaseViewCount(long id);
+
+    boolean getLikeStatud(long postId, long userId);
+
+    int getLikeCount(long id);
 }

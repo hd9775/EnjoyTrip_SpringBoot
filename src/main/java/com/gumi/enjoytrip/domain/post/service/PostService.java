@@ -28,11 +28,11 @@ public class PostService {
     }
 
     public boolean getLikeStatus(long postId, long userId) {
-
+        return postRepository.getLikeStatud(postId, userId);
     }
 
     public int getLikeCount(long id) {
-
+        return postRepository.getLikeCount(id);
     }
 
     public void increaseViewCount(long id) {
