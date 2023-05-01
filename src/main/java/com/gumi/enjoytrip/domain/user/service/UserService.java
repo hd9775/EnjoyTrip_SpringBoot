@@ -1,5 +1,6 @@
 package com.gumi.enjoytrip.domain.user.service;
 
+import com.gumi.enjoytrip.domain.user.dto.UserDto;
 import com.gumi.enjoytrip.domain.user.entity.Role;
 import com.gumi.enjoytrip.domain.user.entity.User;
 import com.gumi.enjoytrip.domain.user.exception.DuplicateEmailException;
@@ -33,5 +34,13 @@ public class UserService {
                 .nickname(nickname)
                 .role(Role.USER)
                 .build());
+    }
+
+    public User getUser(long userId) {
+        User user = userRepository.getUser(userId);
+        if(user == null) {
+            throw new UserNotFoundException("사용자를 찾을 수 없습니다.");
+        }
+        return user;
     }
 }
