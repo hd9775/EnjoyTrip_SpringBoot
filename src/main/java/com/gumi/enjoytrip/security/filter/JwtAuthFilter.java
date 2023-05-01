@@ -12,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -66,10 +67,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         List<RequestMatcher> matchers = new ArrayList<>();
 
         // HttpSecurity 클래스에서 permitAll()로 허용한 URL 패턴 가져오기
-        RequestMatcherProvider requestMatcherProvider = (RequestMatcherProvider) request.getAttribute(RequestMatcherProvider.class.getName());
-        if (requestMatcherProvider != null) {
-            matchers.addAll(requestMatcherProvider.getRequestMatchers());
-        }
+        matchers.add(new AntPathRequestMatcher("/api/v1/users/login"));
+        matchers.add(new AntPathRequestMatcher("/api/v1/users/signup"));
+        matchers.add(new AntPathRequestMatcher("/api/v1/tours/**"));
+        matchers.add(new AntPathRequestMatcher("/"));
+
+        matchers.add(new AntPathRequestMatcher("/v3/api-docs/**"));
+        matchers.add(new AntPathRequestMatcher("/swagger-ui.html"));
+        matchers.add(new AntPathRequestMatcher("/swagger-ui/**"));
 
         // 요청 URL이 permitAll()로 허용한 URL 패턴에 해당하는지 확인
         for (RequestMatcher matcher : matchers) {

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -32,8 +32,7 @@ public class UserController {
     })
     @PostMapping("/login")
     public ResponseEntity<Token> login(@RequestParam String email, @RequestParam String password) {
-        String hashedPassword = passwordEncoder.encode(password);
-        User user = userService.login(email, hashedPassword);
+        User user = userService.login(email, password, passwordEncoder);
         return ResponseEntity.ok(tokenService.generateToken(user.getEmail(), user.getRole()));
     }
 
@@ -42,10 +41,9 @@ public class UserController {
             @ApiResponse(responseCode = "201", description = "회원가입 성공"),
             @ApiResponse(responseCode = "409", description = "중복된 이메일입니다.")
     })
-    @PostMapping("/singup")
+    @PostMapping("/signup")
     public ResponseEntity<Void> signup(@RequestParam String email, @RequestParam String password, @RequestParam String nickname) {
-        String hashedPassword = passwordEncoder.encode(password);
-        userService.signup(email, hashedPassword, nickname);
+        userService.signup(email, password, nickname, passwordEncoder);
         return ResponseEntity.created(null).build();
     }
 }

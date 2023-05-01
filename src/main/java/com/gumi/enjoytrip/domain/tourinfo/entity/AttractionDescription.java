@@ -1,8 +1,6 @@
 package com.gumi.enjoytrip.domain.tourinfo.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AttractionDescription {
     @Id
+    @Column(name = "content_id")
     private Integer contentId;
 
     @Column
@@ -23,4 +22,9 @@ public class AttractionDescription {
 
     @Column
     private String telname;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    @JoinColumn(name = "content_id")
+    private AttractionInfo attractionInfo;
 }

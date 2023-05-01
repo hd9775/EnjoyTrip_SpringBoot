@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .httpBasic().disable()
                 .formLogin().disable()
                 .authorizeHttpRequests()
-                        .requestMatchers("/api/v1/login", "/api/v1/signup", "/").permitAll()
+                        .requestMatchers("/api/v1/users/login", "/api/v1/users/signup", "/api/v1/tours/**", "/").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll() // Swagger3 접속 주소를 허용
                         .requestMatchers("/api/v1/**").authenticated()
                 .and()
