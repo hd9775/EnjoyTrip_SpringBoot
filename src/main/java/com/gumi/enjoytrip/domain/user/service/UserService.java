@@ -9,6 +9,7 @@ import com.gumi.enjoytrip.domain.user.exception.UserNotFoundException;
 import com.gumi.enjoytrip.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,11 +40,7 @@ public class UserService {
                 .build());
     }
 
-    public User getUser(long userId) {
-        User user = userRepository.getUser(userId);
-        if(user == null) {
-            throw new UserNotFoundException("사용자를 찾을 수 없습니다.");
-        }
-        return user;
+    public User getLoginUser() {
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }
