@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AttractionInfo {
     @Id
+    @Column(name = "content_id")
     private Integer contentId;
 
     @Column
@@ -41,11 +42,11 @@ public class AttractionInfo {
     private Integer readCount;
 
     @JoinColumn(name = "sido_code")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Sido sido;
 
     @JoinColumn(name = "gugun_code")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Gugun gugun;
 
     @Column
