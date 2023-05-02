@@ -10,6 +10,9 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -29,8 +32,16 @@ public class Post extends BaseTimeEntity {
     @ColumnDefault("0")
     private Integer views;
 
+    @Column(name = "is_notice", nullable = false)
+    @ColumnDefault("false")
+    private boolean isNotice;
+
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
+
+    @Column(name = "create_at")
+    @ColumnDefault("now()")
+    private LocalDateTime createAt;
 }
