@@ -1,6 +1,5 @@
 # EnjoyTrip_SpringBoot
 
----
 
 ## 유저 관리
 ### 회원가입
