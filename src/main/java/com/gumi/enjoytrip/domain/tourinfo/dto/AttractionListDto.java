@@ -13,7 +13,6 @@ public class AttractionListDto {
     private String title;
     private String address;
     private String image;
-    private String content;
     private int sidoCode;
     private int gugunCode;
     private double latitude;
