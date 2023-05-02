@@ -33,7 +33,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                         .requestMatchers("/api/v1/users/login", "/api/v1/users/signup", "/api/v1/tours/**", "/").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll() // Swagger3 접속 주소를 허용
-                        .requestMatchers("/api/v1/**").authenticated()
+                        .requestMatchers("/api/v1/**").hasRole("USER")
+                .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtAuthFilter(tokenService), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
