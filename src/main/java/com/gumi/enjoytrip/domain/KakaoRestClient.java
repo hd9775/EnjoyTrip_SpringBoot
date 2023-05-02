@@ -1,6 +1,7 @@
 package com.gumi.enjoytrip.domain;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -17,19 +18,24 @@ public class KakaoRestClient {
     }
 
     public String getAddress(double x, double y) {
-        String response = this.webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .queryParam("x", x)
-                        .queryParam("y", y)
-                        .build())
-                .retrieve()
-                .bodyToFlux(String.class)
-                .blockFirst();
+        String address = "";
+        try {
+            String response = this.webClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .queryParam("x", x)
+                            .queryParam("y", y)
+                            .build())
+                    .retrieve()
+                    .bodyToFlux(String.class)
+                    .blockFirst();
 
-        JSONObject jsonObject = new JSONObject(response);
-        JSONArray documents = jsonObject.getJSONArray("documents");
-        JSONObject addressInfo = documents.getJSONObject(0).getJSONObject("road_address");
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray documents = jsonObject.getJSONArray("documents");
+            JSONObject addressInfo = documents.getJSONObject(0).getJSONObject("road_address");
+            address = addressInfo.getString("address_name");
+        } catch (JSONException ignored) {
 
-        return addressInfo.getString("address_name");
+        }
+        return address;
     }
 }

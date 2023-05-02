@@ -7,11 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-
-import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -24,16 +21,15 @@ public class LikePost extends BaseTimeEntity {
 
     @Column(name = "post_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private long postId;
+    private Post post;
 
     @Column(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private long userId;
+    private User user;
 
     @Builder
-    public LikePost(long postId, long userId) {
-        this.postId = postId;
-        this.userId = userId;
+    public LikePost(User user, Post post) {
+        this.user = user;
+        this.post = post;
     }
-
 }
