@@ -11,11 +11,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/hot-places")
 @RequiredArgsConstructor
@@ -72,5 +75,10 @@ public class HotPlaceController {
         User user = userService.getLoginUser();
         hotPlaceService.deleteHotPlace(id, user);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/upload")
+    public String uploadImage(@RequestParam("file") MultipartFile file) {
+        return hotPlaceService.uploadImage(file);
     }
 }

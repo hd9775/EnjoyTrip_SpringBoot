@@ -1,6 +1,5 @@
 package com.gumi.enjoytrip.domain.user.service;
 
-import com.gumi.enjoytrip.domain.user.dto.UserDto;
 import com.gumi.enjoytrip.domain.user.entity.Role;
 import com.gumi.enjoytrip.domain.user.entity.User;
 import com.gumi.enjoytrip.domain.user.exception.DuplicateEmailException;
@@ -12,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public User login(String email, String password, PasswordEncoder passwordEncoder) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
         if (!passwordEncoder.matches(password, user.getPassword())) {
@@ -27,6 +28,7 @@ public class UserService {
         return user;
     }
 
+    @Transactional
     public void signup(String email, String password, String nickname, PasswordEncoder passwordEncoder) {
         User user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {

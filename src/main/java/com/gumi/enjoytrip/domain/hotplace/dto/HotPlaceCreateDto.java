@@ -15,6 +15,7 @@ public class HotPlaceCreateDto {
     private String name;
     private String content;
     private int placeType;
+    private String imageFileName;
     private double latitude;
     private double longitude;
     private Date visitDate;
@@ -24,6 +25,7 @@ public class HotPlaceCreateDto {
                 .name(name)
                 .content(content)
                 .placeType(placeType)
+                .imageFileName(imageFileName)
                 .latitude(latitude)
                 .longitude(longitude)
                 .address(address)

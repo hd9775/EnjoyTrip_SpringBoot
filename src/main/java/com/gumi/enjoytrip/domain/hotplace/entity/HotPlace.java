@@ -1,8 +1,6 @@
 package com.gumi.enjoytrip.domain.hotplace.entity;
 
 import com.gumi.enjoytrip.domain.BaseTimeEntity;
-import com.gumi.enjoytrip.domain.hotplace.dto.HotPlaceCreateDto;
-import com.gumi.enjoytrip.domain.hotplace.dto.HotPlaceUpdateDto;
 import com.gumi.enjoytrip.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -11,7 +9,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -33,6 +30,9 @@ public class HotPlace extends BaseTimeEntity {
     private Integer placeType;
 
     @Column(nullable = false)
+    private String imageFileName;
+
+    @Column(nullable = false)
     private Double latitude;
 
     @Column(nullable = false)
@@ -50,10 +50,11 @@ public class HotPlace extends BaseTimeEntity {
     private User user;
 
     @Builder
-    public HotPlace(String name, String content, Integer placeType, Double latitude, Double longitude, String address, Date visitDate, User user) {
+    public HotPlace(String name, String content, Integer placeType, String imageFileName, Double latitude, Double longitude, String address, Date visitDate, User user) {
         this.name = name;
         this.content = content;
         this.placeType = placeType;
+        this.imageFileName = imageFileName;
         this.latitude = latitude;
         this.longitude = longitude;
         this.address = address;

@@ -1,17 +1,15 @@
 package com.gumi.enjoytrip.domain.post.entity;
 
 import com.gumi.enjoytrip.domain.BaseTimeEntity;
-import com.gumi.enjoytrip.domain.post.dto.PostDto;
-import com.gumi.enjoytrip.domain.post.dto.PostUpdateDto;
 import com.gumi.enjoytrip.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -42,19 +40,12 @@ public class Post extends BaseTimeEntity {
     private User user;
 
     public Post update(Post post) {
-        if(post.title != null) {
+        if(post.title != null)
             this.title = post.title;
-        }
-        if(post.content != null) {
+        if(post.content != null)
             this.content = post.content;
-        }
-        if(post.views != this.views) {
-            this.views = post.views;
-        }
-        if(post.isNotice != this.isNotice) {
+        if(post.isNotice != this.isNotice)
             this.isNotice = post.isNotice;
-        }
-
         return this;
     }
 
@@ -66,5 +57,4 @@ public class Post extends BaseTimeEntity {
         this.isNotice = isNotice;
         this.user = user;
     }
-
 }

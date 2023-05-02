@@ -11,164 +11,101 @@ import com.gumi.enjoytrip.domain.post.exception.PostNotFoundException;
 import com.gumi.enjoytrip.domain.post.repository.LikePostRepository;
 import com.gumi.enjoytrip.domain.post.repository.PostRepository;
 import com.gumi.enjoytrip.domain.user.entity.User;
-import com.gumi.enjoytrip.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
 
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
     private final LikePostRepository likePostRepository;
 
-    public List<PostListDto> listPost() {
-        List<Post> postList = postRepository.findAll();
-        List<PostListDto> postListDtoList = new ArrayList<>();
-        for (Post post : postList) {
-            String creatorNickname = post.getUser().getNickname();
-            int likeCount = getLikeCount(post.getId());
-            postListDtoList.add(toPostListDto(post, likeCount, creatorNickname));
-        }
-
-        return postListDtoList;
+    @Transactional(readOnly = true)
+    public List<PostListDto> getPostList() {
+        return postRepository.findAll().stream()
+                .map(post -> toPostListDto(post, likePostRepository.countByPostId(post.getId())))
+                .toList();
     }
 
-    public void createPost(String title, String content, User user) {
-        postRepository.save(Post.builder().title(title).content(content).user(user).build());
+    @Transactional
+    public long createPost(PostCreateDto postCreateDto, User user) {
+        return postRepository.save(postCreateDto.toEntity(user)).getId();
     }
 
-    public PostDto detailPost(long postId) {
-        Post post = postRepository.getOne(postId);
-        long userId = post.getUser().getId();
-        String creatorNickname = post.getUser().getNickname();
-        boolean isLiked = getLikeStatus(postId, userId);
-        int likeCount = getLikeCount(postId);
-
-        increaseViewCount(postId);
-
-        PostDto postDto = toPostDto(post, isLiked, likeCount, creatorNickname);
-        return postDto;
+    @Transactional
+    public PostDto getPost(long id, User user) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("존재하지 않는 게시글입니다."));
+        postRepository.increaseViews(id);
+        boolean isLiked = likePostRepository.countByPostIdAndUserId(id, user.getId()) != 0;
+        int likeCount = likePostRepository.countByPostId(id);
+        return toPostDto(post, isLiked, likeCount);
     }
 
-    public boolean getLikeStatus(long postId, long userId) {
-        if( likePostRepository.countByPostIdAndUserId(postId, userId) == 0) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    public int getLikeCount(long id) {
-        return likePostRepository.countByPostId(id);
-    }
-
-    public void increaseViewCount(long id) {
-        Post post = postRepository.getOne(id);
-        post.update(Post.builder().views(post.getViews()+1).build());
-        postRepository.save(post);
-    }
-
-    public Post getPost(long id) {
-        return postRepository.getOne(id);
-    }
-
-    public void updatePost(long postId, String title, String content, User user) {
-        if (getPost(postId) == null) {
-            throw new PostNotFoundException("존재하지 않는 게시글입니다.");
-        }
-        if (getPost(postId).getUser().getId() != user.getId()) {
+    public long updatePost(long id, PostUpdateDto postUpdateDto, User user) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("존재하지 않는 게시글입니다."));
+        if (!Objects.equals(post.getUser().getId(), user.getId())) {
             throw new InvalidUserException("작성자만 수정할 수 있습니다.");
         }
-
-        Post post = postRepository.getOne(postId);
-        post.update(Post.builder().title(title).content(content).build());
-        postRepository.save(post);
+        return postRepository.save(post.update(postUpdateDto.toEntity())).getId();
     }
 
-    public void deletePost(long postId, User user) {
-        if (getPost(postId) == null) {
-            throw new PostNotFoundException("존재하지 않는 게시글입니다.");
-        }
-        if (getPost(postId).getUser().getId() != user.getId()) {
+    public void deletePost(long id, User user) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("존재하지 않는 게시글입니다."));
+        if (!Objects.equals(post.getUser().getId(), user.getId())) {
             throw new InvalidUserException("작성자만 삭제할 수 있습니다.");
         }
-
-        postRepository.deleteById(postId);
+        postRepository.deleteById(id);
     }
 
-    public void likePost(long postId, long userId) {
-        if(likePostRepository.countByPostIdAndUserId(postId, userId) == 0) {
-            likePostRepository.save(LikePost.builder().userId(userId).postId(postId).build());
+    public void togglePostLike(long id, User user) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("존재하지 않는 게시글입니다."));
+        if (likePostRepository.countByPostIdAndUserId(id, user.getId()) == 0) {
+            likePostRepository.save(LikePost.builder().post(post).user(user).build());
+        } else {
+            likePostRepository.deleteByPostIdAndUserId(id, user.getId());
         }
     }
 
-    public void unlikePost(long postId, long userId) {
-        likePostRepository.deleteById(likePostRepository.findByPostIdAndUserId(postId, userId).getId());
-    }
-
-    public void setNotice(long id, boolean isNotice, User user) {
-        if (getPost(id) == null) {
-            throw new PostNotFoundException("존재하지 않는 게시글입니다.");
-        }
+    public void togglePostNotice(long id, User user) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("존재하지 않는 게시글입니다."));
         if (user.getRole().equals("ROLE_ADMIN")) {
             throw new InvalidUserException("관리자만 공지사항을 설정 및 해제할 수 있습니다.");
         }
-
-        Post post = postRepository.getOne(id);
-        post.update(Post.builder().isNotice(isNotice).build());
-        postRepository.save(post);
+        postRepository.save(post.update(Post.builder().isNotice(!post.isNotice()).build()));
     }
 
 
-    public PostListDto toPostListDto(Post post, int likeCount, String creatorName) {
-        PostListDto postListDto = new PostListDto();
-        postListDto.setId(post.getId());
-        postListDto.setTitle(post.getTitle());
-        postListDto.setViews(post.getViews());
-        postListDto.setIsNotice(post.isNotice());
-        postListDto.setLikeCount(likeCount);
-        postListDto.setCreatorId(post.getUser().getId());
-        postListDto.setCreatorNickname(creatorName);
-        postListDto.setCreatedAt(convertLocalDateTimeToString(post.getCreatedAt()));
-        return postListDto;
+    public PostListDto toPostListDto(Post post, int likeCount) {
+        return new PostListDto(
+                post.getId(),
+                post.getTitle(),
+                post.getViews(),
+                post.isNotice(),
+                likeCount,
+                post.getUser().getId(),
+                post.getUser().getNickname(),
+                post.getCreatedAt()
+        );
     }
 
-    public PostDto toPostDto(Post post, boolean isLiked, int likeCount, String creatorNickname) {
-        PostDto postDto = new PostDto();
-        postDto.setId(post.getId());
-        postDto.setTitle(post.getTitle());
-        postDto.setContent(post.getContent());
-        postDto.setViews(post.getViews());
-        postDto.setIsLiked(isLiked);
-        postDto.setIsNotice(post.isNotice());
-        postDto.setLikeCount(likeCount);
-        postDto.setCreatorId(post.getUser().getId());
-        postDto.setCreatorNickname(creatorNickname);
-        postDto.setCreatedAt(convertLocalDateTimeToString(post.getCreatedAt()));
-        return postDto;
+    public PostDto toPostDto(Post post, boolean isLiked, int likeCount) {
+        return new PostDto(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getViews(),
+                isLiked,
+                post.isNotice(),
+                likeCount,
+                post.getUser().getId(),
+                post.getUser().getNickname(),
+                post.getCreatedAt()
+        );
     }
 
-    public PostDto toPostDto(Post post) {
-        PostDto postDto = new PostDto();
-        postDto.setId(post.getId());
-        postDto.setTitle(post.getTitle());
-        postDto.setContent(post.getContent());
-        postDto.setViews(post.getViews());
-        postDto.setIsNotice(post.isNotice());
-        postDto.setCreatorId(post.getUser().getId());
-        postDto.setCreatedAt(convertLocalDateTimeToString(post.getCreatedAt()));
-        return postDto;
-    }
-
-    public String convertLocalDateTimeToString(LocalDateTime date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return date.toString().formatted(formatter);
-    }
 }

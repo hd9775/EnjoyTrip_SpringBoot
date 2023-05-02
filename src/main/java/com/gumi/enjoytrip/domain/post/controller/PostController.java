@@ -1,23 +1,19 @@
 package com.gumi.enjoytrip.domain.post.controller;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gumi.enjoytrip.domain.post.dto.*;
-import com.gumi.enjoytrip.domain.post.entity.Post;
-import com.gumi.enjoytrip.domain.post.exception.InvalidUserException;
-import com.gumi.enjoytrip.domain.post.exception.PostNotFoundException;
+import com.gumi.enjoytrip.domain.post.dto.PostCreateDto;
+import com.gumi.enjoytrip.domain.post.dto.PostDto;
+import com.gumi.enjoytrip.domain.post.dto.PostListDto;
+import com.gumi.enjoytrip.domain.post.dto.PostUpdateDto;
 import com.gumi.enjoytrip.domain.post.service.PostService;
 import com.gumi.enjoytrip.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/v1/posts")
@@ -28,94 +24,75 @@ public class PostController {
     private final UserService userService;
 
     @Operation(summary = "게시글 목록")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "게시글 목록 조회 성공")
+    })
     @GetMapping("/")
-    public ResponseEntity<List<PostListDto>> listPost() {
-        List<PostListDto> postListDtoList = postService.listPost();
-
-        return ResponseEntity.ok(postListDtoList);
+    public List<PostListDto> getPosts() {
+        return postService.getPostList();
     }
 
     @Operation(summary = "게시글 조회")
-    @PostMapping("/{postId}")
-    public ResponseEntity<PostDto> detailPost(@PathVariable(value = "postId") long postId) {
-        PostDto postDto = postService.detailPost(postId);
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "게시글 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다.")
+    })
+    @PostMapping("/{id}")
+    public ResponseEntity<PostDto> getPost(@PathVariable long id) {
+        PostDto postDto = postService.getPost(id, userService.getLoginUser());
         return ResponseEntity.ok(postDto);
     }
 
     @Operation(summary = "게시글 작성")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "게시글 작성 성공")
+    })
     @PostMapping("/")
-    public ResponseEntity<Void> createPost(@RequestBody PostCreateDto postCreateDto) {
-        postService.createPost(postCreateDto.getTitle(), postCreateDto.getContent(), userService.getLoginUser());
-        return ResponseEntity.ok().build();
+    public long createPost(@RequestBody PostCreateDto postCreateDto) {
+        return postService.createPost(postCreateDto, userService.getLoginUser());
     }
 
     @Operation(summary = "게시글 수정")
-    @PutMapping("/{postId}")
-    public ResponseEntity<Void> updatePost(@RequestBody PostUpdateDto postDto) {
-        System.out.println(postDto.getId());
-        postService.updatePost(postDto.getId(), postDto.getTitle(), postDto.getContent(), userService.getLoginUser());
-
-        return ResponseEntity.ok().build();
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "게시글 수정 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다."),
+            @ApiResponse(responseCode = "403", description = "작성자가 아닙니다.")
+    })
+    @PutMapping("/{id}")
+    public Long updatePost(@PathVariable long id, @RequestBody PostUpdateDto postDto) {
+        return postService.updatePost(id, postDto, userService.getLoginUser());
     }
 
     @Operation(summary = "게시글 삭제")
-    @DeleteMapping("/{postId}")
-    public ResponseEntity<Void> deletePost(@PathVariable(value = "postId") long postId) {
-        postService.deletePost(postId, userService.getLoginUser());
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "게시글 삭제 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다."),
+            @ApiResponse(responseCode = "403", description = "작성자가 아닙니다.")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePost(long id) {
+        postService.deletePost(id, userService.getLoginUser());
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "공지 설정")
-    @PostMapping(value = "/{postId}/notice")
-    public ResponseEntity<Void> setNotice(@PathVariable(value = "postId") long id, @RequestBody Map<String, String> requestBody) {
-        postService.setNotice(id, Boolean.parseBoolean(requestBody.get("isNotice")), userService.getLoginUser());
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "공지 설정 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다."),
+    })
+    @PostMapping(value = "/{id}/notice")
+    public ResponseEntity<Void> noticbePost(@PathVariable long id) {
+        postService.togglePostNotice(id, userService.getLoginUser());
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "좋아요")
-    @PostMapping(value = "/{postId}/like")
-    public ResponseEntity<Void> likePost(@RequestBody LikePostDto likePostDto) {
-        postService.likePost(likePostDto.getPostId(), likePostDto.getUserId());
-        return ResponseEntity.ok().build();
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "좋아요 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다."),
+    })
+    @PostMapping(value = "/{id}/like")
+    public void likePost(@PathVariable long id) {
+        postService.togglePostLike(id, userService.getLoginUser());
     }
-
-    @Operation(summary = "좋아요 취소")
-    @PostMapping(value = "/{postId}/unlike")
-    public ResponseEntity<Void> unlikePost(@RequestBody LikePostDto likePostDto) {
-        postService.unlikePost(likePostDto.getPostId(), likePostDto.getUserId());
-        return ResponseEntity.ok().build();
-    }
-
-    public PostDto toPostDto(Post post, boolean isLiked, int likeCount, String creatorNickname) {
-        PostDto postDto = new PostDto();
-        postDto.setId(post.getId());
-        postDto.setTitle(post.getTitle());
-        postDto.setContent(post.getContent());
-        postDto.setViews(post.getViews());
-        postDto.setIsLiked(isLiked);
-        postDto.setIsNotice(post.isNotice());
-        postDto.setLikeCount(likeCount);
-        postDto.setCreatorId(post.getUser().getId());
-        postDto.setCreatorNickname(creatorNickname);
-        postDto.setCreatedAt(convertLocalDateTimeToString(post.getCreatedAt()));
-        return postDto;
-    }
-
-    public PostDto toPostDto(Post post) {
-        PostDto postDto = new PostDto();
-        postDto.setId(post.getId());
-        postDto.setTitle(post.getTitle());
-        postDto.setContent(post.getContent());
-        postDto.setViews(post.getViews());
-        postDto.setIsNotice(post.isNotice());
-        postDto.setCreatorId(post.getUser().getId());
-        postDto.setCreatedAt(convertLocalDateTimeToString(post.getCreatedAt()));
-        return postDto;
-    }
-
-    public String convertLocalDateTimeToString(LocalDateTime date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return date.toString().formatted(formatter);
-    }
-
 }

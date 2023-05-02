@@ -11,7 +11,7 @@ public class PostCreateDto {
     private String title;
     private String content;
 
-    public Post toEntity(String title, String content, User user) {
+    public Post toEntity(User user) {
         return Post.builder()
                 .title(title)
                 .content(content)
