@@ -1,40 +1,21 @@
 package com.gumi.enjoytrip.domain.post.dto;
 
+import com.gumi.enjoytrip.domain.post.entity.Post;
+import com.gumi.enjoytrip.domain.user.entity.User;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class PostCreateDto {
     private String title;
     private String content;
-    private long creatorId;
 
-    public PostCreateDto() {
-    }
-
-    public PostCreateDto(String title, String content, long creatorId) {
-        this.title = title;
-        this.content = content;
-        this.creatorId = creatorId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public long getCreatorId() {
-        return creatorId;
-    }
-
-    public void setCreatorId(long creatorId) {
-        this.creatorId = creatorId;
+    public Post toEntity(String title, String content, User user) {
+        return Post.builder()
+                .title(title)
+                .content(content)
+                .user(user)
+                .build();
     }
 }
