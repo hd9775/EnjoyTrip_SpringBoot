@@ -1,7 +1,7 @@
 package com.gumi.enjoytrip.domain.user.dto;
 
 public class UserDto {
-	private Long id;
+	private long id;
 	private String email;
 	private String nickname;
 	private String role;
@@ -16,11 +16,11 @@ public class UserDto {
 		this.role = role;
 	}
 
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

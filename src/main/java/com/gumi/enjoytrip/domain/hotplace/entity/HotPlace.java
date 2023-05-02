@@ -1,6 +1,8 @@
 package com.gumi.enjoytrip.domain.hotplace.entity;
 
 import com.gumi.enjoytrip.domain.BaseTimeEntity;
+import com.gumi.enjoytrip.domain.hotplace.dto.HotPlaceCreateDto;
+import com.gumi.enjoytrip.domain.hotplace.dto.HotPlaceUpdateDto;
 import com.gumi.enjoytrip.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -57,5 +59,23 @@ public class HotPlace extends BaseTimeEntity {
         this.address = address;
         this.visitDate = visitDate;
         this.user = user;
+    }
+
+    public HotPlace update(HotPlace hotPlace) {
+        if(hotPlace.getName() != null)
+            this.name = hotPlace.getName();
+        if(hotPlace.getContent() != null)
+            this.content = hotPlace.getContent();
+        if(hotPlace.getPlaceType() != null)
+            this.placeType = hotPlace.getPlaceType();
+        if(hotPlace.getLatitude() != null)
+            this.latitude = hotPlace.getLatitude();
+        if(hotPlace.getLongitude() != null)
+            this.longitude = hotPlace.getLongitude();
+        if(hotPlace.getAddress() != null)
+            this.address = hotPlace.getAddress();
+        if(hotPlace.getVisitDate() != null)
+            this.visitDate = hotPlace.getVisitDate();
+        return this;
     }
 }

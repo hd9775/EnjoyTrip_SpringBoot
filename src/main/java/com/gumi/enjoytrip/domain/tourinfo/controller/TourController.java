@@ -39,6 +39,7 @@ public class TourController {
     }
 
     @Operation(summary = "관광지 목록 조회")
+    @ApiResponse(responseCode = "200", description = "관광지 목록 조회 성공")
     @GetMapping("/attractions")
     public List<AttractionListDto> getAttractions(@RequestParam int sidoCode, @RequestParam int gugunCode, @RequestParam int contentTypeId) {
         return tourService.getAttractionList(sidoCode, gugunCode, contentTypeId);
