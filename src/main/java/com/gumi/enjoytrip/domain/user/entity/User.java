@@ -15,7 +15,7 @@ import org.hibernate.annotations.DynamicInsert;
 public class User extends BaseTimeEntity {
     @Id
     @Column(name = "user_id")
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)

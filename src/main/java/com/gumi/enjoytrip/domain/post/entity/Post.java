@@ -1,11 +1,11 @@
 package com.gumi.enjoytrip.domain.post.entity;
 
 import com.gumi.enjoytrip.domain.BaseTimeEntity;
+import com.gumi.enjoytrip.domain.post.dto.PostDto;
+import com.gumi.enjoytrip.domain.post.dto.PostUpdateDto;
 import com.gumi.enjoytrip.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -32,16 +32,39 @@ public class Post extends BaseTimeEntity {
     @ColumnDefault("0")
     private Integer views;
 
-    @Column(name = "is_notice", nullable = false)
+    @Column(nullable = false)
     @ColumnDefault("false")
     private boolean isNotice;
 
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(nullable = false)
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
-    @Column(name = "create_at")
-    @ColumnDefault("now()")
-    private LocalDateTime createAt;
+    public Post update(Post post) {
+        if(post.title != null) {
+            this.title = post.title;
+        }
+        if(post.content != null) {
+            this.content = post.content;
+        }
+        if(post.views != this.views) {
+            this.views = post.views;
+        }
+        if(post.isNotice != this.isNotice) {
+            this.isNotice = post.isNotice;
+        }
+
+        return this;
+    }
+
+    @Builder
+    public Post(String title, String content, int views, boolean isNotice, User user) {
+        this.title = title;
+        this.content = content;
+        this.views = views;
+        this.isNotice = isNotice;
+        this.user = user;
+    }
+
 }

@@ -1,5 +1,7 @@
 package com.gumi.enjoytrip.domain.post.dto;
 
+import com.gumi.enjoytrip.domain.post.entity.Post;
+
 public class PostDto {
     private long id;
     private String title;
