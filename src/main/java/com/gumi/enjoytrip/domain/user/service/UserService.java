@@ -35,7 +35,7 @@ public class UserService {
                 .email(email)
                 .password(passwordEncoder.encode(password))
                 .nickname(nickname)
-                .role(Role.USER)
+                .role(Role.ROLE_USER)
                 .build());
     }
 
