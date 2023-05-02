@@ -1,5 +1,6 @@
 package com.gumi.enjoytrip.domain.hotplace.dto;
 
+import com.gumi.enjoytrip.domain.hotplace.entity.HotPlace;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,10 +11,18 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 public class HotPlaceUpdateDto {
-    long id;
-    private String title;
+    private long id;
+    private String name;
     private String content;
     private int placeType;
-    private long creatorId;
-    private Date date;
+    private Date visitDate;
+
+    public HotPlace toEntity() {
+        return HotPlace.builder()
+                .name(name)
+                .content(content)
+                .placeType(placeType)
+                .visitDate(visitDate)
+                .build();
+    }
 }
