@@ -1,5 +1,7 @@
 # EnjoyTrip_SpringBoot
 
+## 클래스 다이어그램
+![enjoytrip V1.0.png](enjoytrip%20V1.0.png)
 
 ## 유저 관리
 ### 회원가입
@@ -40,8 +42,10 @@
 
 ---
 ## 핫플레이스
-### 핫플레이스 생성
+### 핫플레이스 생성, 수정, 조회, 삭제
 ![image](https://user-images.githubusercontent.com/12166357/235614796-cb943ee0-9dbc-4ee2-b7d6-9f5472857a43.png)
+
+### 핫플레이스 사진 업로드
 
 ---
 ## 관광지
