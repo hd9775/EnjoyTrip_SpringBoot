@@ -49,34 +49,35 @@ public class UserController {
     @Operation(summary = "회원정보 수정")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "회원정보 수정 성공"),
-            @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없습니다."),
-            @ApiResponse(responseCode = "401", description = "비밀번호가 일치하지 않습니다.")
+            @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없습니다.")
     })
-    @PostMapping("/update/profile")
-    public ResponseEntity<Void> modify(@RequestBody UserUpdateDto userUpdateDto) {
-        userService.updateUser(userUpdateDto);
+    @PatchMapping("/update/profile")
+    public ResponseEntity<Void> modify(@RequestParam String nickname) {
+        userService.updateUser(nickname, userService.getLoginUser());
         return ResponseEntity.ok(null);
     }
 
     @Operation(summary = "비밀번호 확인")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "비밀번호 확인 성공"),
-            @ApiResponse(responseCode = "401", description = "비밀번호가 일치하지 않습니다.")
+            @ApiResponse(responseCode = "401", description = "비밀번호가 일치하지 않습니다."),
+            @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없습니다.")
     })
-    @PostMapping("/password")
-    public ResponseEntity<Void> passwordCheck(@RequestParam String email, @RequestParam String password) {
-        userService.passwordCheck(email, password, passwordEncoder);
+    @GetMapping("/password")
+    public ResponseEntity<Void> passwordCheck(@RequestParam String password) {
+        userService.passwordCheck(password, userService.getLoginUser(), passwordEncoder);
         return ResponseEntity.ok(null);
     }
 
     @Operation(summary = "비밀번호 변경")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "비밀번호 변경 성공"),
-            @ApiResponse(responseCode = "401", description = "비밀번호가 일치하지 않습니다.")
+            @ApiResponse(responseCode = "401", description = "비밀번호가 일치하지 않습니다."),
+            @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없습니다.")
     })
-    @PostMapping("/update/password")
-    public ResponseEntity<Void> passwordChange(@RequestBody UserPasswordUpdateDto userPasswordUpdateDto) {
-        userService.passwordChange(userPasswordUpdateDto, passwordEncoder);
+    @PatchMapping("/update/password")
+    public ResponseEntity<Void> passwordChange(@RequestParam String oldPassword, @RequestParam String newPassword) {
+        userService.passwordChange(oldPassword, newPassword, userService.getLoginUser(), passwordEncoder);
         return ResponseEntity.ok(null);
     }
 
