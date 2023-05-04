@@ -19,7 +19,7 @@ public class User extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
@@ -27,6 +27,9 @@ public class User extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String nickname;
+
+    @Column(nullable = false)
+    private String imageFileName;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -44,16 +47,21 @@ public class User extends BaseTimeEntity {
             this.nickname = user.nickname;
         if(user.password != null)
             this.password = user.password;
+        if(user.imageFileName != null)
+            this.imageFileName = user.imageFileName;
+        if(user.refreshToken != null)
+            this.refreshToken = user.refreshToken;
         if(user.isDeleted != null)
             this.isDeleted = user.isDeleted;
         return this;
     }
 
     @Builder
-    public User(String email, String password, String nickname, Role role, String refreshToken, Boolean isDeleted) {
+    public User(String email, String password, String nickname, String imageFileName, Role role, String refreshToken, Boolean isDeleted) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
+        this.imageFileName = imageFileName;
         this.role = role;
         this.refreshToken = refreshToken;
         this.isDeleted = isDeleted;

@@ -29,7 +29,7 @@ public class UserService {
     }
 
     @Transactional
-    public void signup(String email, String password, String nickname, PasswordEncoder passwordEncoder) {
+    public void join(String email, String password, String nickname, PasswordEncoder passwordEncoder) {
         User user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {
             throw new DuplicateEmailException("중복된 이메일입니다.");
@@ -42,30 +42,22 @@ public class UserService {
                 .build());
     }
 
-    public User getLoginUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
-
-    public void updateUser(String nickname, User user) {
+    @Transactional
+    public void updateProfileNickname(String nickname, User user) {
         userRepository.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
         userRepository.save(user.update(User.builder().nickname(nickname).build()));
     }
 
-    public void passwordCheck(String password, User user, PasswordEncoder passwordEncoder) {
-        userRepository.findByEmail(user.getEmail()).orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
-        System.out.println(passwordEncoder.encode(password));
-        System.out.println(user.getPassword());
-
+    @Transactional
+    public void changePassword(String password, String newPassword, User user, PasswordEncoder passwordEncoder) {
+        userRepository.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new InvalidPasswordException("비밀번호가 일치하지 않습니다.");
         }
+        userRepository.save(user.update(User.builder().password(passwordEncoder.encode(newPassword)).build()));
     }
 
-    public void passwordChange(String oldPassword, String newPassword, User user, PasswordEncoder passwordEncoder) {
-        userRepository.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
-        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
-            throw new InvalidPasswordException("비밀번호가 일치하지 않습니다.");
-        }
-        userRepository.save(user.update(User.builder().password(passwordEncoder.encode(newPassword)).build()));
+    public User getLoginUser() {
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

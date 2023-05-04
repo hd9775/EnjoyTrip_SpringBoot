@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -38,9 +39,9 @@ public class UserController {
             @ApiResponse(responseCode = "201", description = "회원가입 성공"),
             @ApiResponse(responseCode = "409", description = "중복된 이메일입니다.")
     })
-    @PostMapping("/signup")
-    public ResponseEntity<Void> signup(@RequestParam String email, @RequestParam String password, @RequestParam String nickname) {
-        userService.signup(email, password, nickname, passwordEncoder);
+    @PostMapping("/join")
+    public ResponseEntity<Void> join(@RequestParam String email, @RequestParam String password, @RequestParam String nickname) {
+        userService.join(email, password, nickname, passwordEncoder);
         return ResponseEntity.created(null).build();
     }
 
@@ -49,21 +50,15 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "회원정보 수정 성공"),
             @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없습니다.")
     })
-    @PatchMapping("/update/profile")
-    public ResponseEntity<Void> modify(@RequestParam String nickname) {
-        userService.updateUser(nickname, userService.getLoginUser());
+    @PatchMapping("/profile-nickname")
+    public ResponseEntity<Void> updateProfileNickname(@RequestParam String nickname) {
+        userService.updateProfileNickname(nickname, userService.getLoginUser());
         return ResponseEntity.ok(null);
     }
 
-    @Operation(summary = "비밀번호 확인")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "비밀번호 확인 성공"),
-            @ApiResponse(responseCode = "401", description = "비밀번호가 일치하지 않습니다."),
-            @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없습니다.")
-    })
-    @GetMapping("/password")
-    public ResponseEntity<Void> passwordCheck(@RequestParam String password) {
-        userService.passwordCheck(password, userService.getLoginUser(), passwordEncoder);
+    @PatchMapping("/profile-image")
+    public ResponseEntity<Void> updateProfileImage(@RequestParam MultipartFile image) {
+        // TODO: 이미지 업로드
         return ResponseEntity.ok(null);
     }
 
@@ -73,9 +68,9 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "비밀번호가 일치하지 않습니다."),
             @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없습니다.")
     })
-    @PatchMapping("/update/password")
-    public ResponseEntity<Void> passwordChange(@RequestParam String oldPassword, @RequestParam String newPassword) {
-        userService.passwordChange(oldPassword, newPassword, userService.getLoginUser(), passwordEncoder);
+    @PatchMapping("/change-password")
+    public ResponseEntity<Void> changePassword(@RequestParam String password, @RequestParam String newPassword) {
+        userService.changePassword(password, newPassword, userService.getLoginUser(), passwordEncoder);
         return ResponseEntity.ok(null);
     }
 
