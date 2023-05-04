@@ -1,7 +1,5 @@
 package com.gumi.enjoytrip.domain.user.service;
 
-import com.gumi.enjoytrip.domain.user.dto.UserPasswordUpdateDto;
-import com.gumi.enjoytrip.domain.user.dto.UserUpdateDto;
 import com.gumi.enjoytrip.domain.user.entity.Role;
 import com.gumi.enjoytrip.domain.user.entity.User;
 import com.gumi.enjoytrip.domain.user.exception.DuplicateEmailException;
@@ -14,10 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import java.io.Console;
-import java.util.logging.ConsoleHandler;
 
 @Slf4j
 @Service

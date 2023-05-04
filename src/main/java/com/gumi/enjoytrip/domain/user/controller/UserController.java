@@ -1,7 +1,5 @@
 package com.gumi.enjoytrip.domain.user.controller;
 
-import com.gumi.enjoytrip.domain.user.dto.UserPasswordUpdateDto;
-import com.gumi.enjoytrip.domain.user.dto.UserUpdateDto;
 import com.gumi.enjoytrip.domain.user.entity.User;
 import com.gumi.enjoytrip.domain.user.service.UserService;
 import com.gumi.enjoytrip.security.dto.Token;
