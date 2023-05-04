@@ -74,4 +74,15 @@ public class UserController {
         return ResponseEntity.ok(null);
     }
 
+    @Operation(summary = "회원탈퇴")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원탈퇴 성공"),
+            @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없습니다.")
+    })
+    @DeleteMapping("/")
+    public ResponseEntity<Void> deleteUser() {
+        userService.deleteUser(userService.getLoginUser());
+        return ResponseEntity.ok(null);
+    }
+
 }

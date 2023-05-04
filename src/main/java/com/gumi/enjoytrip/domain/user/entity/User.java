@@ -43,6 +43,8 @@ public class User extends BaseTimeEntity {
     private Boolean isDeleted;
 
     public User update(User user) {
+        if(user.email != null)
+            this.email = user.email;
         if(user.nickname != null)
             this.nickname = user.nickname;
         if(user.password != null)

@@ -57,6 +57,12 @@ public class UserService {
         userRepository.save(user.update(User.builder().password(passwordEncoder.encode(newPassword)).build()));
     }
 
+    @Transactional
+    public void deleteUser(User user) {
+        userRepository.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
+        userRepository.save(user.update(User.builder().isDeleted(true).email("").password("").nickname("탈퇴한 유저").build()));
+    }
+
     public User getLoginUser() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
