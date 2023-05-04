@@ -19,11 +19,13 @@ public class LikePost extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "post_id", nullable = false)
+    @JoinColumn(name = "post_id", nullable = false)
+    @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Post post;
 
-    @Column(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
