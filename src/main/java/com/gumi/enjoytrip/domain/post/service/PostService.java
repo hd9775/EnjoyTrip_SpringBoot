@@ -80,7 +80,7 @@ public class PostService {
         if (user.getRole().equals("ROLE_ADMIN")) {
             throw new InvalidUserException("관리자만 공지사항을 설정 및 해제할 수 있습니다.");
         }
-        postRepository.save(post.update(Post.builder().isNotice(!post.isNotice()).build()));
+        postRepository.save(post.update(Post.builder().isNotice(!post.getIsNotice()).build()));
     }
 
 
@@ -89,7 +89,7 @@ public class PostService {
                 post.getId(),
                 post.getTitle(),
                 post.getViews(),
-                post.isNotice(),
+                post.getIsNotice(),
                 likeCount,
                 post.getUser().getId(),
                 post.getUser().getNickname(),
@@ -104,7 +104,7 @@ public class PostService {
                 post.getContent(),
                 post.getViews(),
                 isLiked,
-                post.isNotice(),
+                post.getIsNotice(),
                 likeCount,
                 post.getUser().getId(),
                 post.getUser().getNickname(),
