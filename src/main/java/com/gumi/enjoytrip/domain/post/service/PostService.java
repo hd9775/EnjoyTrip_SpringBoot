@@ -46,6 +46,7 @@ public class PostService {
         return toPostDto(post, isLiked, likeCount);
     }
 
+    @Transactional
     public long updatePost(long id, PostUpdateDto postUpdateDto, User user) {
         Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("존재하지 않는 게시글입니다."));
         if (!Objects.equals(post.getUser().getId(), user.getId())) {
@@ -54,6 +55,7 @@ public class PostService {
         return postRepository.save(post.update(postUpdateDto.toEntity())).getId();
     }
 
+    @Transactional
     public void deletePost(long id, User user) {
         Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("존재하지 않는 게시글입니다."));
         if (!Objects.equals(post.getUser().getId(), user.getId())) {
@@ -62,6 +64,7 @@ public class PostService {
         postRepository.deleteById(id);
     }
 
+    @Transactional
     public void togglePostLike(long id, User user) {
         Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("존재하지 않는 게시글입니다."));
         if (likePostRepository.countByPostIdAndUserId(id, user.getId()) == 0) {
@@ -71,6 +74,7 @@ public class PostService {
         }
     }
 
+    @Transactional
     public void togglePostNotice(long id, User user) {
         Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("존재하지 않는 게시글입니다."));
         if (user.getRole().equals("ROLE_ADMIN")) {
