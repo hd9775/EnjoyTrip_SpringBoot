@@ -32,7 +32,7 @@ public class Post extends BaseTimeEntity {
 
     @Column(nullable = false)
     @ColumnDefault("false")
-    private boolean isNotice;
+    private Boolean isNotice;
 
     @JoinColumn(nullable = false)
     @ManyToOne
