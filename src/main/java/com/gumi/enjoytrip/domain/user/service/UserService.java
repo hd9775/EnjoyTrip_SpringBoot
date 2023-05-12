@@ -1,5 +1,7 @@
 package com.gumi.enjoytrip.domain.user.service;
 
+import com.gumi.enjoytrip.domain.user.dto.LoginDto;
+import com.gumi.enjoytrip.domain.user.dto.UserCreateDto;
 import com.gumi.enjoytrip.domain.user.entity.Role;
 import com.gumi.enjoytrip.domain.user.entity.User;
 import com.gumi.enjoytrip.domain.user.exception.DuplicateEmailException;
@@ -20,24 +22,25 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public User login(String email, String password, PasswordEncoder passwordEncoder) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
-        if (!passwordEncoder.matches(password, user.getPassword())) {
+    public User login(LoginDto loginDto, PasswordEncoder passwordEncoder) {
+        User user = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
+        if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
             throw new InvalidPasswordException("비밀번호가 일치하지 않습니다.");
         }
         return user;
     }
 
     @Transactional
-    public void join(String email, String password, String nickname, PasswordEncoder passwordEncoder) {
-        User user = userRepository.findByEmail(email).orElse(null);
+    public void join(UserCreateDto userCreateDto, PasswordEncoder passwordEncoder) {
+        User user = userRepository.findByEmail(userCreateDto.getEmail()).orElse(null);
         if (user != null) {
             throw new DuplicateEmailException("중복된 이메일입니다.");
         }
         userRepository.save(User.builder()
-                .email(email)
-                .password(passwordEncoder.encode(password))
-                .nickname(nickname)
+                .email(userCreateDto.getEmail())
+                .password(passwordEncoder.encode(userCreateDto.getPassword()))
+                .nickname(userCreateDto.getNickname())
+                .imageFileName("default.png")
                 .role(Role.ROLE_USER)
                 .build());
     }
