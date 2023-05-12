@@ -1,13 +1,13 @@
-package com.gumi.enjoytrip.domain.recuriment.service;
+package com.gumi.enjoytrip.domain.recuritment.service;
 
 import com.gumi.enjoytrip.domain.post.exception.InvalidUserException;
-import com.gumi.enjoytrip.domain.recuriment.dto.RecruitmentCreateDto;
-import com.gumi.enjoytrip.domain.recuriment.dto.RecruitmentDto;
-import com.gumi.enjoytrip.domain.recuriment.dto.RecruitmentListDto;
-import com.gumi.enjoytrip.domain.recuriment.dto.RecruitmentUpdateDto;
-import com.gumi.enjoytrip.domain.recuriment.entity.Recruitment;
-import com.gumi.enjoytrip.domain.recuriment.exception.RecruitmentNotFountException;
-import com.gumi.enjoytrip.domain.recuriment.repository.RecruitmentRepository;
+import com.gumi.enjoytrip.domain.recuritment.dto.RecruitmentCreateDto;
+import com.gumi.enjoytrip.domain.recuritment.dto.RecruitmentDto;
+import com.gumi.enjoytrip.domain.recuritment.dto.RecruitmentListDto;
+import com.gumi.enjoytrip.domain.recuritment.dto.RecruitmentUpdateDto;
+import com.gumi.enjoytrip.domain.recuritment.entity.Recruitment;
+import com.gumi.enjoytrip.domain.recuritment.exception.RecruitmentNotFountException;
+import com.gumi.enjoytrip.domain.recuritment.repository.RecruitmentRepository;
 import com.gumi.enjoytrip.domain.user.entity.User;
 import com.gumi.enjoytrip.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

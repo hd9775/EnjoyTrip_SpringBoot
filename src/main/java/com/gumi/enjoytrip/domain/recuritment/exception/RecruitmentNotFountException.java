@@ -1,4 +1,4 @@
-package com.gumi.enjoytrip.domain.recuriment.exception;
+package com.gumi.enjoytrip.domain.recuritment.exception;
 
 public class RecruitmentNotFountException extends RuntimeException{
     public RecruitmentNotFountException(String message)  {

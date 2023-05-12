@@ -1,4 +1,4 @@
-package com.gumi.enjoytrip.domain.recuriment.dto;
+package com.gumi.enjoytrip.domain.recuritment.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,10 +9,12 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @AllArgsConstructor
-public class RecruitmentListDto {
+public class RecruitmentDto {
     private long id;
     private String title;
+    private String content;
     private boolean isComplete;
+    private boolean isJoin;
     private int maxCount;
     private int joinCount;
     private long creatorId;

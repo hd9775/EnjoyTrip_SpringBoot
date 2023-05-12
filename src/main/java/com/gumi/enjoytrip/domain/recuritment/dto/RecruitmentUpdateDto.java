@@ -1,7 +1,6 @@
-package com.gumi.enjoytrip.domain.recuriment.dto;
+package com.gumi.enjoytrip.domain.recuritment.dto;
 
-import com.gumi.enjoytrip.domain.recuriment.entity.Recruitment;
-import com.gumi.enjoytrip.domain.user.entity.User;
+import com.gumi.enjoytrip.domain.recuritment.entity.Recruitment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,19 +10,18 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @AllArgsConstructor
-public class RecruitmentCreateDto {
+public class RecruitmentUpdateDto {
     private String title;
     private String content;
     private LocalDateTime deadline;
     private int maxCount;
 
-    public Recruitment toEntity(User user) {
+    public Recruitment toEntity() {
         return Recruitment.builder()
                 .title(title)
                 .content(content)
                 .deadline(deadline)
                 .maxCount(maxCount)
-                .user(user)
                 .build();
     }
 }
