@@ -1,5 +1,7 @@
 package com.gumi.enjoytrip.domain.user.controller;
 
+import com.gumi.enjoytrip.domain.user.dto.LoginDto;
+import com.gumi.enjoytrip.domain.user.dto.UserCreateDto;
 import com.gumi.enjoytrip.domain.user.entity.User;
 import com.gumi.enjoytrip.domain.user.service.UserService;
 import com.gumi.enjoytrip.security.dto.Token;
@@ -29,8 +31,8 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "비밀번호가 일치하지 않습니다.")
     })
     @PostMapping("/login")
-    public ResponseEntity<Token> login(@RequestParam String email, @RequestParam String password) {
-        User user = userService.login(email, password, passwordEncoder);
+    public ResponseEntity<Token> login(@RequestBody LoginDto loginDto) {
+        User user = userService.login(loginDto, passwordEncoder);
         return ResponseEntity.ok(tokenService.generateToken(user.getEmail(), user.getRole()));
     }
 
@@ -40,8 +42,8 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "중복된 이메일입니다.")
     })
     @PostMapping("/join")
-    public ResponseEntity<Void> join(@RequestParam String email, @RequestParam String password, @RequestParam String nickname) {
-        userService.join(email, password, nickname, passwordEncoder);
+    public ResponseEntity<Void> join(@RequestBody UserCreateDto userCreateDto) {
+        userService.join(userCreateDto, passwordEncoder);
         return ResponseEntity.created(null).build();
     }
 

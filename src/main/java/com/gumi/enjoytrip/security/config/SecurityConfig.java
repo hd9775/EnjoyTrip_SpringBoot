@@ -12,6 +12,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @EnableWebSecurity
 @Configuration
@@ -27,11 +30,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // jwt 로그인
-        http.csrf().disable()
+        http.cors().and()
+                .csrf().disable()
                 .httpBasic().disable()
                 .formLogin().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/users/login", "/api/v1/users/signup", "/api/v1/tours/**", "/").permitAll()
+                .requestMatchers("/api/v1/users/login", "/api/v1/users/join", "/api/v1/tours/**", "/").permitAll()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/actuator/**").permitAll() // Swagger3 접속 주소를 허용
                 .requestMatchers("/api/v1/**").hasRole("USER")
                 .anyRequest().authenticated()
@@ -41,5 +45,16 @@ public class SecurityConfig {
                 .and()
                 .logout().disable();
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("*"); // 모든 요청을 허용
+        configuration.addAllowedMethod("*"); // 모든 메소드를 허용
+        configuration.addAllowedHeader("*"); // 모든 헤더를 허용
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
