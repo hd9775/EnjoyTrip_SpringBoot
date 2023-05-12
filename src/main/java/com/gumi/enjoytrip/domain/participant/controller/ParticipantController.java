@@ -2,11 +2,7 @@ package com.gumi.enjoytrip.domain.participant.controller;
 
 import com.gumi.enjoytrip.domain.participant.dto.ParticipantCreateDto;
 import com.gumi.enjoytrip.domain.participant.dto.ParticipantListDto;
-import com.gumi.enjoytrip.domain.participant.entity.Participant;
 import com.gumi.enjoytrip.domain.participant.service.ParticipantService;
-import com.gumi.enjoytrip.domain.post.dto.PostCreateDto;
-import com.gumi.enjoytrip.domain.post.dto.PostListDto;
-import com.gumi.enjoytrip.domain.recuritment.service.RecruitmentService;
 import com.gumi.enjoytrip.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
