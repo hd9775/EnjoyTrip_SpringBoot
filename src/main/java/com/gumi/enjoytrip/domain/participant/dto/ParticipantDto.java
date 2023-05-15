@@ -1,6 +1,6 @@
 package com.gumi.enjoytrip.domain.participant.dto;
 
-import com.gumi.enjoytrip.domain.recuritment.entity.Recruitment;
+import com.gumi.enjoytrip.domain.recruitment.entity.Recruitment;
 import com.gumi.enjoytrip.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

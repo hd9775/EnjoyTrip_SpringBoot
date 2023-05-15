@@ -1,16 +1,15 @@
-package com.gumi.enjoytrip.domain.recuritment.service;
+package com.gumi.enjoytrip.domain.recruitment.service;
 
 import com.gumi.enjoytrip.domain.participant.repository.ParticipantRepository;
 import com.gumi.enjoytrip.domain.post.exception.InvalidUserException;
-import com.gumi.enjoytrip.domain.recuritment.dto.RecruitmentCreateDto;
-import com.gumi.enjoytrip.domain.recuritment.dto.RecruitmentDto;
-import com.gumi.enjoytrip.domain.recuritment.dto.RecruitmentListDto;
-import com.gumi.enjoytrip.domain.recuritment.dto.RecruitmentUpdateDto;
-import com.gumi.enjoytrip.domain.recuritment.entity.Recruitment;
-import com.gumi.enjoytrip.domain.recuritment.exception.RecruitmentNotFoundException;
-import com.gumi.enjoytrip.domain.recuritment.repository.RecruitmentRepository;
+import com.gumi.enjoytrip.domain.recruitment.dto.RecruitmentCreateDto;
+import com.gumi.enjoytrip.domain.recruitment.dto.RecruitmentDto;
+import com.gumi.enjoytrip.domain.recruitment.dto.RecruitmentListDto;
+import com.gumi.enjoytrip.domain.recruitment.dto.RecruitmentUpdateDto;
+import com.gumi.enjoytrip.domain.recruitment.entity.Recruitment;
+import com.gumi.enjoytrip.domain.recruitment.exception.RecruitmentNotFoundException;
+import com.gumi.enjoytrip.domain.recruitment.repository.RecruitmentRepository;
 import com.gumi.enjoytrip.domain.user.entity.User;
-import com.gumi.enjoytrip.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
