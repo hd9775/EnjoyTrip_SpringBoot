@@ -31,10 +31,11 @@ public class Participant extends BaseTimeEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Recruitment recruitment;
 
-    @Column
+    @Column(nullable = false)
+    @ColumnDefault("hello")
     private String comment;
 
-    @Column
+    @Column(nullable = false)
     @ColumnDefault("false")
     private Boolean isSelected;
 
@@ -44,5 +45,12 @@ public class Participant extends BaseTimeEntity {
         this.user = user;
         this.comment = comment;
         this.isSelected = isSelected;
+    }
+
+    public Participant update(Participant participant) {
+        if(this.isSelected != participant.isSelected)
+            this.isSelected = participant.isSelected;
+
+        return this;
     }
 }

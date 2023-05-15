@@ -23,7 +23,8 @@ public class ParticipantController {
 
     @Operation(summary = "참여자 목록")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "참여자 목록 조회 성공")
+            @ApiResponse(responseCode = "200", description = "참여자 목록 조회 성공"),
+            @ApiResponse(responseCode = "403", description = "작성자만 조회할 수 있습니다.")
     })
     @GetMapping("/{id}")
     public List<ParticipantListDto> getParticipants(@PathVariable long id) {
@@ -32,16 +33,21 @@ public class ParticipantController {
 
     @Operation(summary = "참여")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "참여 성공")
+            @ApiResponse(responseCode = "200", description = "참여 성공"),
+            @ApiResponse(responseCode = "404", description = "모집글이 존재하지 않습니다."),
     })
-    @PutMapping("/{id}")
-    public long createParticipant(@RequestBody ParticipantCreateDto participantCreateDto) {
-        return participantService.createParticipant(participantCreateDto, userService.getLoginUser());
+    @PostMapping("/{id}")
+    public void createParticipant(@PathVariable long id, @RequestBody ParticipantCreateDto participantCreateDto) {
+        System.out.println("participant join");
+        System.out.println(participantCreateDto.getComment());
+        participantService.createParticipant(id, participantCreateDto, userService.getLoginUser());
     }
 
     @Operation(summary = "참여 해제")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "참여 해제 성공")
+            @ApiResponse(responseCode = "200", description = "참여 해제 성공"),
+            @ApiResponse(responseCode = "403", description = "참여자만 삭제할 수 있습니다."),
+            @ApiResponse(responseCode = "404", description = "모집글 혹은 참여정보가 존재하지 않습니다."),
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteParticipant(@PathVariable long id) {
@@ -52,10 +58,11 @@ public class ParticipantController {
     @Operation(summary = "참여자 설정")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "설정 성공"),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 참여정보입니다."),
+            @ApiResponse(responseCode = "403", description = "작성자만 수정할 수 있습니다."),
+            @ApiResponse(responseCode = "404", description = "모집글 혹은 참여정보가 존재하지 않습니다."),
     })
-    @PostMapping(value = "/{id}/select")
-    public void selectParticipant(@PathVariable long id) {
+    @PatchMapping(value = "/{id}/select")
+    public void toggleParticipant(@PathVariable long id) {
         participantService.toggleParticipantSelect(id, userService.getLoginUser());
     }
 
