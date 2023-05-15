@@ -1,17 +1,19 @@
 package com.gumi.enjoytrip.domain.recuritment.service;
 
+import com.gumi.enjoytrip.domain.participant.repository.ParticipantRepository;
 import com.gumi.enjoytrip.domain.post.exception.InvalidUserException;
 import com.gumi.enjoytrip.domain.recuritment.dto.RecruitmentCreateDto;
 import com.gumi.enjoytrip.domain.recuritment.dto.RecruitmentDto;
 import com.gumi.enjoytrip.domain.recuritment.dto.RecruitmentListDto;
 import com.gumi.enjoytrip.domain.recuritment.dto.RecruitmentUpdateDto;
 import com.gumi.enjoytrip.domain.recuritment.entity.Recruitment;
-import com.gumi.enjoytrip.domain.recuritment.exception.RecruitmentNotFountException;
+import com.gumi.enjoytrip.domain.recuritment.exception.RecruitmentNotFoundException;
 import com.gumi.enjoytrip.domain.recuritment.repository.RecruitmentRepository;
 import com.gumi.enjoytrip.domain.user.entity.User;
 import com.gumi.enjoytrip.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -21,38 +23,43 @@ import java.util.Objects;
 public class RecruitmentService {
 
     private final RecruitmentRepository recruitmentRepository;
+    private final ParticipantRepository participantRepository;
     private final UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public List<RecruitmentListDto> getRecruitmentList() {
         List<RecruitmentListDto> list = recruitmentRepository.findAll().stream()
-                                                //TODO joinCount
-                .map(post -> toPostListDto(post, 0))
+                .map(recruitment -> toRecruitmentListDto(recruitment, participantRepository.countByRecruitmentId(recruitment.getId())))
                 .toList();
         return list;
     }
 
+    @Transactional(readOnly = true)
     public RecruitmentDto getRecruitment(long id, User user) {
-        Recruitment recruitment = recruitmentRepository.findById(id).orElseThrow(() -> new RecruitmentNotFountException("존재하지 않는 모집글 입니다."));
-        //TODO: joinCount, isJoin
-        int joinCount = 0;
-        boolean isJoin = false;
+        Recruitment recruitment = recruitmentRepository.findById(id).orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 모집글 입니다."));
+
+        int joinCount = participantRepository.countByRecruitmentId(recruitment.getId());
+        boolean isJoin = (participantRepository.countByRecruitmentIdAndUserId(recruitment.getId(), user.getId())==0 ? false : true);
         return toRecruitmentDto(recruitment, isJoin, joinCount);
     }
 
+    @Transactional
     public long createRecruitment(RecruitmentCreateDto recruitmentCreateDto, User user) {
         return recruitmentRepository.save(recruitmentCreateDto.toEntity(user)).getId();
     }
 
+    @Transactional
     public long updateRecruitment(long id, RecruitmentUpdateDto recruitmentUpdateDto, User user) {
-        Recruitment recruitment = recruitmentRepository.findById(id).orElseThrow(() -> new RecruitmentNotFountException("존재하지 않는 모집글 입니다."));
+        Recruitment recruitment = recruitmentRepository.findById(id).orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 모집글 입니다."));
         if(!Objects.equals(recruitment.getUser().getId(), user.getId())) {
             throw new InvalidUserException("작성자만 수정할 수 있습니다.");
         }
         return recruitmentRepository.save(recruitment.update(recruitmentUpdateDto.toEntity())).getId();
     }
 
+    @Transactional
     public void deleteRecruitment(long id, User user) {
-        Recruitment recruitment = recruitmentRepository.findById(id).orElseThrow(() -> new RecruitmentNotFountException("존재하지 않는 모집글 입니다."));
+        Recruitment recruitment = recruitmentRepository.findById(id).orElseThrow(() -> new RecruitmentNotFoundException("존재하지 않는 모집글 입니다."));
         if(!Objects.equals(recruitment.getUser().getId(), user.getId())) {
             throw new InvalidUserException("작성자만 수정할 수 있습니다.");
         }
@@ -75,7 +82,7 @@ public class RecruitmentService {
         );
     }
 
-    public RecruitmentListDto toPostListDto(Recruitment recruitment, int joinCount) {
+    public RecruitmentListDto toRecruitmentListDto(Recruitment recruitment, int joinCount) {
         return new RecruitmentListDto(
                 recruitment.getId(),
                 recruitment.getTitle(),

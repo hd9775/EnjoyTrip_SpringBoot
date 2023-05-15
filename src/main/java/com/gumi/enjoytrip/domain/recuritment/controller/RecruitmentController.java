@@ -37,7 +37,7 @@ public class RecruitmentController {
             @ApiResponse(responseCode = "200", description = "모집글 조회 성공"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 모집글입니다.")
     })
-    @PostMapping("/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<RecruitmentDto> getRecruitment(@PathVariable long id) {
         RecruitmentDto RecruitmentDto = recruitmentService.getRecruitment(id, userService.getLoginUser());
         return ResponseEntity.ok(RecruitmentDto);
@@ -48,8 +48,8 @@ public class RecruitmentController {
             @ApiResponse(responseCode = "200", description = "모집글 작성 성공")
     })
     @PostMapping("/")
-    public long createRecruitment(@RequestBody RecruitmentCreateDto RecruitmentCreateDto) {
-        return recruitmentService.createRecruitment(RecruitmentCreateDto, userService.getLoginUser());
+    public long createRecruitment(@RequestBody RecruitmentCreateDto recruitmentCreateDto) {
+        return recruitmentService.createRecruitment(recruitmentCreateDto, userService.getLoginUser());
     }
 
     @Operation(summary = "모집글 수정")
@@ -59,8 +59,8 @@ public class RecruitmentController {
             @ApiResponse(responseCode = "403", description = "작성자가 아닙니다.")
     })
     @PutMapping("/{id}")
-    public Long updateRecruitment(@PathVariable long id, @RequestBody RecruitmentUpdateDto RecruitmentDto) {
-        return recruitmentService.updateRecruitment(id, RecruitmentDto, userService.getLoginUser());
+    public Long updateRecruitment(@PathVariable long id, @RequestBody RecruitmentUpdateDto recruitmentUpdateDtoDto) {
+        return recruitmentService.updateRecruitment(id, recruitmentUpdateDtoDto, userService.getLoginUser());
     }
 
     @Operation(summary = "모집글 삭제")
@@ -70,9 +70,8 @@ public class RecruitmentController {
             @ApiResponse(responseCode = "403", description = "작성자가 아닙니다.")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRecruitment(long id) {
+    public ResponseEntity<Void> deleteRecruitment(@PathVariable long id) {
         recruitmentService.deleteRecruitment(id, userService.getLoginUser());
         return ResponseEntity.ok().build();
     }
-
 }
