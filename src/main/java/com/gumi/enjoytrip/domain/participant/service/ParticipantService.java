@@ -24,7 +24,6 @@ public class ParticipantService {
 
     private final ParticipantRepository participantRepository;
     private final RecruitmentRepository recruitmentRepository;
-    private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public List<ParticipantListDto> getParticipantList(long id, User user) {
