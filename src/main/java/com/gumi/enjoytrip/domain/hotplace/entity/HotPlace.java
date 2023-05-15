@@ -44,7 +44,7 @@ public class HotPlace extends BaseTimeEntity {
     @Column(nullable = false)
     private Date visitDate;
 
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;

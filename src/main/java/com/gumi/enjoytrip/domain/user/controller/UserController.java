@@ -2,6 +2,7 @@ package com.gumi.enjoytrip.domain.user.controller;
 
 import com.gumi.enjoytrip.domain.user.dto.LoginDto;
 import com.gumi.enjoytrip.domain.user.dto.UserCreateDto;
+import com.gumi.enjoytrip.domain.user.dto.UserDto;
 import com.gumi.enjoytrip.domain.user.entity.User;
 import com.gumi.enjoytrip.domain.user.service.UserService;
 import com.gumi.enjoytrip.security.dto.Token;
@@ -47,6 +48,17 @@ public class UserController {
         return ResponseEntity.created(null).build();
     }
 
+    @Operation(summary = "로그아웃")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
+            @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없습니다.")
+    })
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout() {
+        userService.logout();
+        return ResponseEntity.ok(null);
+    }
+
     @Operation(summary = "회원정보 수정")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "회원정보 수정 성공"),
@@ -87,4 +99,13 @@ public class UserController {
         return ResponseEntity.ok(null);
     }
 
+    @Operation(summary = "내 정보 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "내 정보 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없습니다.")
+    })
+    @GetMapping("/me")
+    public UserDto getMyUser() {
+        return userService.getMyUser();
+    }
 }

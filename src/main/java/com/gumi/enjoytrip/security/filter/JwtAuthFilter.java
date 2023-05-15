@@ -37,8 +37,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 User user = tokenService.getUserFromToken(token);
                 Authentication authentication = getAuthentication(user);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                log.info("인증 성공 : " + user.getEmail());
-                log.info("권한 : " + authentication.getAuthorities());
+                log.info("인증 성공");
+                log.info("이메일 : " + ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail());
+                log.info("권한 : " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
                 filterChain.doFilter(request, response);
             } else {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

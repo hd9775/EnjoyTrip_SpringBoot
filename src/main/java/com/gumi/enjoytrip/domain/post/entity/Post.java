@@ -34,7 +34,7 @@ public class Post extends BaseTimeEntity {
     @ColumnDefault("false")
     private Boolean isNotice;
 
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
