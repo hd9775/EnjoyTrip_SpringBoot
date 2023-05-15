@@ -27,7 +27,7 @@ public class PostController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "게시글 목록 조회 성공")
     })
-    @GetMapping("/")
+    @GetMapping("")
     public List<PostListDto> getPosts() {
         return postService.getPostList();
     }
@@ -37,7 +37,7 @@ public class PostController {
             @ApiResponse(responseCode = "200", description = "게시글 조회 성공"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다.")
     })
-    @PostMapping("/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<PostDto> getPost(@PathVariable long id) {
         PostDto postDto = postService.getPost(id, userService.getLoginUser());
         return ResponseEntity.ok(postDto);
@@ -45,11 +45,11 @@ public class PostController {
 
     @Operation(summary = "게시글 작성")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "게시글 작성 성공")
+            @ApiResponse(responseCode = "201", description = "게시글 작성 성공")
     })
-    @PostMapping("/")
-    public long createPost(@RequestBody PostCreateDto postCreateDto) {
-        return postService.createPost(postCreateDto, userService.getLoginUser());
+    @PostMapping("")
+    public ResponseEntity<Long> createPost(@RequestBody PostCreateDto postCreateDto) {
+        return ResponseEntity.created(null).body(postService.createPost(postCreateDto, userService.getLoginUser()));
     }
 
     @Operation(summary = "게시글 수정")
@@ -59,8 +59,8 @@ public class PostController {
             @ApiResponse(responseCode = "403", description = "작성자가 아닙니다.")
     })
     @PutMapping("/{id}")
-    public Long updatePost(@PathVariable long id, @RequestBody PostUpdateDto postDto) {
-        return postService.updatePost(id, postDto, userService.getLoginUser());
+    public ResponseEntity<Long> updatePost(@PathVariable long id, @RequestBody PostUpdateDto postDto) {
+        return ResponseEntity.ok(postService.updatePost(id, postDto, userService.getLoginUser()));
     }
 
     @Operation(summary = "게시글 삭제")
@@ -81,7 +81,7 @@ public class PostController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다."),
     })
     @PostMapping(value = "/{id}/notice")
-    public ResponseEntity<Void> noticbePost(@PathVariable long id) {
+    public ResponseEntity<Void> noticePost(@PathVariable long id) {
         postService.togglePostNotice(id, userService.getLoginUser());
         return ResponseEntity.ok().build();
     }

@@ -2,6 +2,7 @@ package com.gumi.enjoytrip.domain.user.service;
 
 import com.gumi.enjoytrip.domain.user.dto.LoginDto;
 import com.gumi.enjoytrip.domain.user.dto.UserCreateDto;
+import com.gumi.enjoytrip.domain.user.dto.UserDto;
 import com.gumi.enjoytrip.domain.user.entity.Role;
 import com.gumi.enjoytrip.domain.user.entity.User;
 import com.gumi.enjoytrip.domain.user.exception.DuplicateEmailException;
@@ -68,5 +69,22 @@ public class UserService {
 
     public User getLoginUser() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
+    public UserDto toUserDto(User user) {
+        return new UserDto(
+                user.getId(),
+                user.getEmail(),
+                user.getNickname(),
+                user.getRole().name()
+        );
+    }
+
+    public UserDto getMyUser() {
+        return toUserDto(getLoginUser());
+    }
+
+    public void logout() {
+        SecurityContextHolder.clearContext();
     }
 }
