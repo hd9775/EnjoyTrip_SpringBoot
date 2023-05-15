@@ -1,6 +1,6 @@
-package com.gumi.enjoytrip.domain.recuritment.controller;
+package com.gumi.enjoytrip.domain.recruitment.controller;
 
-import com.gumi.enjoytrip.domain.recuritment.exception.RecruitmentNotFoundException;
+import com.gumi.enjoytrip.domain.recruitment.exception.RecruitmentNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

@@ -1,10 +1,10 @@
-package com.gumi.enjoytrip.domain.recuritment.controller;
+package com.gumi.enjoytrip.domain.recruitment.controller;
 
-import com.gumi.enjoytrip.domain.recuritment.dto.RecruitmentCreateDto;
-import com.gumi.enjoytrip.domain.recuritment.dto.RecruitmentDto;
-import com.gumi.enjoytrip.domain.recuritment.dto.RecruitmentListDto;
-import com.gumi.enjoytrip.domain.recuritment.dto.RecruitmentUpdateDto;
-import com.gumi.enjoytrip.domain.recuritment.service.RecruitmentService;
+import com.gumi.enjoytrip.domain.recruitment.dto.RecruitmentCreateDto;
+import com.gumi.enjoytrip.domain.recruitment.dto.RecruitmentDto;
+import com.gumi.enjoytrip.domain.recruitment.dto.RecruitmentListDto;
+import com.gumi.enjoytrip.domain.recruitment.dto.RecruitmentUpdateDto;
+import com.gumi.enjoytrip.domain.recruitment.service.RecruitmentService;
 import com.gumi.enjoytrip.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

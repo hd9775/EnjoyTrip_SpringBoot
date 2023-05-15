@@ -1,4 +1,4 @@
-package com.gumi.enjoytrip.domain.recuritment.entity;
+package com.gumi.enjoytrip.domain.recruitment.entity;
 
 import com.gumi.enjoytrip.domain.BaseTimeEntity;
 import com.gumi.enjoytrip.domain.user.entity.User;

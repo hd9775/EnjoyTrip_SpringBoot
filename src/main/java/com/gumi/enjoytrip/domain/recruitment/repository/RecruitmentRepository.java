@@ -1,6 +1,6 @@
-package com.gumi.enjoytrip.domain.recuritment.repository;
+package com.gumi.enjoytrip.domain.recruitment.repository;
 
-import com.gumi.enjoytrip.domain.recuritment.entity.Recruitment;
+import com.gumi.enjoytrip.domain.recruitment.entity.Recruitment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
