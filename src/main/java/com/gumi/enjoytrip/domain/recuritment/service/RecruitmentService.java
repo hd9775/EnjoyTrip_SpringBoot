@@ -28,10 +28,9 @@ public class RecruitmentService {
 
     @Transactional(readOnly = true)
     public List<RecruitmentListDto> getRecruitmentList() {
-        List<RecruitmentListDto> list = recruitmentRepository.findAll().stream()
+        return recruitmentRepository.findAll().stream()
                 .map(recruitment -> toRecruitmentListDto(recruitment, participantRepository.countByRecruitmentId(recruitment.getId())))
                 .toList();
-        return list;
     }
 
     @Transactional(readOnly = true)
