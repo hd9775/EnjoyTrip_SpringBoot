@@ -1,7 +1,7 @@
 package com.gumi.enjoytrip.domain.participant.entity;
 
 import com.gumi.enjoytrip.domain.BaseTimeEntity;
-import com.gumi.enjoytrip.domain.recuritment.entity.Recruitment;
+import com.gumi.enjoytrip.domain.recruitment.entity.Recruitment;
 import com.gumi.enjoytrip.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -31,8 +31,7 @@ public class Participant extends BaseTimeEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Recruitment recruitment;
 
-    @Column(nullable = false)
-    @ColumnDefault("hello")
+    @Column
     private String comment;
 
     @Column(nullable = false)
