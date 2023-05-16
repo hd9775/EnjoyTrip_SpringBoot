@@ -1,10 +1,13 @@
 package com.gumi.enjoytrip.domain.post.service;
 
 import com.gumi.enjoytrip.domain.post.dto.*;
+import com.gumi.enjoytrip.domain.post.entity.Comment;
 import com.gumi.enjoytrip.domain.post.entity.LikePost;
 import com.gumi.enjoytrip.domain.post.entity.Post;
+import com.gumi.enjoytrip.domain.post.exception.CommentNotFoundException;
 import com.gumi.enjoytrip.domain.post.exception.InvalidUserException;
 import com.gumi.enjoytrip.domain.post.exception.PostNotFoundException;
+import com.gumi.enjoytrip.domain.post.repository.CommentRepository;
 import com.gumi.enjoytrip.domain.post.repository.LikePostRepository;
 import com.gumi.enjoytrip.domain.post.repository.PostRepository;
 import com.gumi.enjoytrip.domain.user.entity.User;
@@ -25,6 +28,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final LikePostRepository likePostRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional(readOnly = true)
     public List<PostListDto> getPostList(int page) {
@@ -99,6 +103,26 @@ public class PostService {
                 .toList();
     }
 
+    public List<CommentListDto> getCommentList(long id) {
+        postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("존재하지 않는 게시글입니다."));
+        return commentRepository.findAllByPostId(id).stream()
+                .map(comment -> toCommentList(comment))
+                .toList();
+    }
+
+    public void createComment(long id, User user, CommentCreateDto commentCreateDto) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("존재하지 않는 게시글입니다."));
+        commentRepository.save(commentCreateDto.toEntity(post, user));
+    }
+
+    public void deleteComment(long id, User user) {
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new CommentNotFoundException("존재하지 않는 댓글 입니다."));
+        if(comment.getUser().getId() != user.getId()) {
+            throw new InvalidUserException("작성자만 삭제할 수 있습니다.");
+        }
+        commentRepository.deleteById(id);
+    }
+
     public PostListDto toPostListDto(Post post, int likeCount) {
         return new PostListDto(
                 post.getId(),
@@ -134,6 +158,16 @@ public class PostService {
                 likePost.getUser().getNickname(),
                 likePost.getUser().getImageFileName(),
                 likePost.getCreatedAt()
+        );
+    }
+
+    private CommentListDto toCommentList(Comment comment) {
+        return new CommentListDto(
+                comment.getId(),
+                comment.getUser().getId(),
+                comment.getUser().getNickname(),
+                comment.getContent(),
+                comment.getCreatedAt()
         );
     }
 }

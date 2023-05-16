@@ -111,4 +111,38 @@ public class PostController {
     public List<LikeUserListDto> getLikeUsers(@PathVariable long id) {
         return postService.getLikeUserList(id);
     }
+
+    @Operation(summary = "댓글 목록")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "댓글 목록 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다."),
+    })
+    @GetMapping(value = "/{id}/comment")
+    public List<CommentListDto> getCommentList(@PathVariable long id) {
+        return postService.getCommentList(id);
+    }
+
+    @Operation(summary = "댓글 작성")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "댓글 작성 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다."),
+    })
+    @PostMapping(value = "/{id}/comment")
+    public ResponseEntity<Void> createComment(@PathVariable long id, @RequestBody CommentCreateDto commentCreateDto) {
+        System.out.println(commentCreateDto.getContent());
+        postService.createComment(id, userService.getLoginUser(), commentCreateDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "댓글 삭제")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "댓글 삭제 성공"),
+            @ApiResponse(responseCode = "403", description = "작성자가 아닙니다."),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다."),
+    })
+    @DeleteMapping(value = "/{id}/comment")
+    public ResponseEntity<Void> deleteComment(@PathVariable long id) {
+        postService.deleteComment(id, userService.getLoginUser());
+        return ResponseEntity.ok().build();
+    }
 }
