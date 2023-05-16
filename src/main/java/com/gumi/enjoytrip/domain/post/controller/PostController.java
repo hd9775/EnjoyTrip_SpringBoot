@@ -1,9 +1,6 @@
 package com.gumi.enjoytrip.domain.post.controller;
 
-import com.gumi.enjoytrip.domain.post.dto.PostCreateDto;
-import com.gumi.enjoytrip.domain.post.dto.PostDto;
-import com.gumi.enjoytrip.domain.post.dto.PostListDto;
-import com.gumi.enjoytrip.domain.post.dto.PostUpdateDto;
+import com.gumi.enjoytrip.domain.post.dto.*;
 import com.gumi.enjoytrip.domain.post.service.PostService;
 import com.gumi.enjoytrip.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -103,5 +100,15 @@ public class PostController {
     @PostMapping(value = "/{id}/like")
     public void likePost(@PathVariable long id) {
         postService.togglePostLike(id, userService.getLoginUser());
+    }
+
+    @Operation(summary = "좋아요 목록")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "좋아요 목록 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다."),
+    })
+    @GetMapping(value = "/{id}/like")
+    public List<LikeUserListDto> getLikeUsers(@PathVariable long id) {
+        return postService.getLikeUsers(id, userService.getLoginUser());
     }
 }

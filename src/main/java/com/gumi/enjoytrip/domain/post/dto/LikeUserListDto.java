@@ -1,31 +1,17 @@
 package com.gumi.enjoytrip.domain.post.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+@AllArgsConstructor
 public class LikeUserListDto {
+    private long id;
     private long creatorId;
     private String creatorNickname;
-
-    public LikeUserListDto(long id, long creatorId, String creatorNickname) {
-        this.creatorId = creatorId;
-        this.creatorNickname = creatorNickname;
-    }
-
-    public LikeUserListDto() {
-
-    }
-
-    public long getCreatorId() {
-        return creatorId;
-    }
-
-    public void setCreatorId(long creatorId) {
-        this.creatorId = creatorId;
-    }
-
-    public String getCreatorNickname() {
-        return creatorNickname;
-    }
-
-    public void setCreatorNickname(String creatorNickname) {
-        this.creatorNickname = creatorNickname;
-    }
+    private LocalDateTime createAt;
 }
