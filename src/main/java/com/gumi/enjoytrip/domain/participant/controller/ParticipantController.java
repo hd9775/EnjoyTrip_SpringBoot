@@ -38,8 +38,6 @@ public class ParticipantController {
     })
     @PostMapping("/{id}")
     public void createParticipant(@PathVariable long id, @RequestBody ParticipantCreateDto participantCreateDto) {
-        System.out.println("participant join");
-        System.out.println(participantCreateDto.getComment());
         participantService.createParticipant(id, participantCreateDto, userService.getLoginUser());
     }
 
