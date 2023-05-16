@@ -1,9 +1,6 @@
 package com.gumi.enjoytrip.domain.post.service;
 
-import com.gumi.enjoytrip.domain.post.dto.PostCreateDto;
-import com.gumi.enjoytrip.domain.post.dto.PostDto;
-import com.gumi.enjoytrip.domain.post.dto.PostListDto;
-import com.gumi.enjoytrip.domain.post.dto.PostUpdateDto;
+import com.gumi.enjoytrip.domain.post.dto.*;
 import com.gumi.enjoytrip.domain.post.entity.LikePost;
 import com.gumi.enjoytrip.domain.post.entity.Post;
 import com.gumi.enjoytrip.domain.post.exception.InvalidUserException;
@@ -86,6 +83,13 @@ public class PostService {
         postRepository.save(post.update(Post.builder().isNotice(!post.getIsNotice()).build()));
     }
 
+    @Transactional(readOnly = true)
+    public List<LikeUserListDto> getLikeUsers(long id, User loginUser) {
+        postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("존재하지 않는 게시글입니다."));
+        return likePostRepository.findAllByPostId(id).stream()
+                .map(likePost -> toLikeUserList(likePost))
+                .toList();
+    }
 
     public PostListDto toPostListDto(Post post, int likeCount) {
         return new PostListDto(
@@ -112,6 +116,15 @@ public class PostService {
                 post.getUser().getId(),
                 post.getUser().getNickname(),
                 post.getCreatedAt()
+        );
+    }
+
+    public LikeUserListDto toLikeUserList(LikePost likePost) {
+        return new LikeUserListDto(
+                likePost.getId(),
+                likePost.getUser().getId(),
+                likePost.getUser().getNickname(),
+                likePost.getCreatedAt()
         );
     }
 
