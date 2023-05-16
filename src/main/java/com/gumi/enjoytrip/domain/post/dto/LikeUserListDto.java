@@ -13,5 +13,6 @@ public class LikeUserListDto {
     private long id;
     private long creatorId;
     private String creatorNickname;
-    private LocalDateTime createAt;
+    private String creatorImage;
+    private LocalDateTime createdAt;
 }

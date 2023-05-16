@@ -11,10 +11,20 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -107,5 +117,24 @@ public class UserController {
     @GetMapping("/me")
     public UserDto getMyUser() {
         return userService.getMyUser();
+    }
+
+    @GetMapping("/images/{filename}")
+    public ResponseEntity<Resource> getProfileImage(@PathVariable String filename) {
+        try {
+            Path imageFilePath = Paths.get("static/profile_images").resolve(filename).normalize();
+            Resource resource = new ClassPathResource(imageFilePath.toString());
+
+            String mediaType = Files.probeContentType(imageFilePath);
+            if (mediaType == null) {
+                mediaType = "application/octet-stream";
+            }
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(mediaType))
+                    .body(resource);
+        } catch (IOException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

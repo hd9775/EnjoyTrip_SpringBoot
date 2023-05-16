@@ -109,7 +109,7 @@ public class PostController {
     })
     @GetMapping(value = "/{id}/like")
     public List<LikeUserListDto> getLikeUsers(@PathVariable long id) {
-        return postService.getLikeUsers(id);
+        return postService.getLikeUserList(id);
     }
 
     @Operation(summary = "댓글 목록")
