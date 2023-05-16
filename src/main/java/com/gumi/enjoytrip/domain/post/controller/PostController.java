@@ -28,8 +28,17 @@ public class PostController {
             @ApiResponse(responseCode = "200", description = "게시글 목록 조회 성공")
     })
     @GetMapping("")
-    public List<PostListDto> getPosts() {
-        return postService.getPostList();
+    public List<PostListDto> getPosts(@RequestParam(value = "page", defaultValue = "1") int page) {
+        return postService.getPostList(page);
+    }
+
+    @Operation(summary = "게시글 페이지 수")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "게시글 페이지 수 조회 성공")
+    })
+    @GetMapping("/page")
+    public ResponseEntity<Integer> getPageCount() {
+        return ResponseEntity.ok(postService.getPageCount());
     }
 
     @Operation(summary = "게시글 조회")
