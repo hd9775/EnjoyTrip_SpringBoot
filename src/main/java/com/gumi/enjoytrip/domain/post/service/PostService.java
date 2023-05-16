@@ -92,10 +92,10 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<LikeUserListDto> getLikeUsers(long id, User loginUser) {
+    public List<LikeUserListDto> getLikeUserList(long id) {
         postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("존재하지 않는 게시글입니다."));
         return likePostRepository.findAllByPostId(id).stream()
-                .map(likePost -> toLikeUserList(likePost))
+                .map(this::toLikeUserListDto)
                 .toList();
     }
 
@@ -127,13 +127,13 @@ public class PostService {
         );
     }
 
-    public LikeUserListDto toLikeUserList(LikePost likePost) {
+    public LikeUserListDto toLikeUserListDto(LikePost likePost) {
         return new LikeUserListDto(
                 likePost.getId(),
                 likePost.getUser().getId(),
                 likePost.getUser().getNickname(),
+                likePost.getUser().getImageFileName(),
                 likePost.getCreatedAt()
         );
     }
-
 }

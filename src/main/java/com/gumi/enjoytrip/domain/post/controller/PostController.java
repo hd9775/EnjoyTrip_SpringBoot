@@ -109,6 +109,6 @@ public class PostController {
     })
     @GetMapping(value = "/{id}/like")
     public List<LikeUserListDto> getLikeUsers(@PathVariable long id) {
-        return postService.getLikeUsers(id, userService.getLoginUser());
+        return postService.getLikeUserList(id);
     }
 }
