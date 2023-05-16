@@ -7,6 +7,7 @@ import com.gumi.enjoytrip.domain.user.entity.Role;
 import com.gumi.enjoytrip.domain.user.entity.User;
 import com.gumi.enjoytrip.domain.user.exception.DuplicateEmailException;
 import com.gumi.enjoytrip.domain.user.exception.InvalidPasswordException;
+import com.gumi.enjoytrip.domain.user.exception.LoginUserNotFoundException;
 import com.gumi.enjoytrip.domain.user.exception.UserNotFoundException;
 import com.gumi.enjoytrip.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -81,10 +82,14 @@ public class UserService {
     }
 
     public UserDto getMyUser() {
+        if (getLoginUser() == null)
+            throw new LoginUserNotFoundException("로그인된 사용자가 없습니다.");
         return toUserDto(getLoginUser());
     }
 
     public void logout() {
+        if (SecurityContextHolder.getContext().getAuthentication() == null)
+            throw new LoginUserNotFoundException("로그인된 사용자가 없습니다.");
         SecurityContextHolder.clearContext();
     }
 }

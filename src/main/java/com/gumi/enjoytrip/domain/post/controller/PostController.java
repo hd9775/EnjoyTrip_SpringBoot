@@ -70,7 +70,7 @@ public class PostController {
             @ApiResponse(responseCode = "403", description = "작성자가 아닙니다.")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(long id) {
+    public ResponseEntity<Void> deletePost(@PathVariable long id) {
         postService.deletePost(id, userService.getLoginUser());
         return ResponseEntity.ok().build();
     }
