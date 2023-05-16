@@ -10,6 +10,8 @@ import com.gumi.enjoytrip.domain.post.repository.PostRepository;
 import com.gumi.enjoytrip.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,10 +27,16 @@ public class PostService {
     private final LikePostRepository likePostRepository;
 
     @Transactional(readOnly = true)
-    public List<PostListDto> getPostList() {
-        return postRepository.findAllByOrderByIdDesc().stream()
+    public List<PostListDto> getPostList(int page) {
+        Pageable pageable = PageRequest.of(page - 1, 15);
+        return postRepository.findAllByOrderByIsNoticeDescIdDesc(pageable).stream()
                 .map(post -> toPostListDto(post, likePostRepository.countByPostId(post.getId())))
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public int getPageCount() {
+        return (int) Math.ceil((double) postRepository.count() / 15);
     }
 
     @Transactional
