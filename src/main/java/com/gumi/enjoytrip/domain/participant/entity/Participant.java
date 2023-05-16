@@ -18,6 +18,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @AllArgsConstructor
 public class Participant extends BaseTimeEntity {
     @Id
+    @Column(name = "participant_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

@@ -12,12 +12,14 @@ import com.gumi.enjoytrip.domain.post.repository.LikePostRepository;
 import com.gumi.enjoytrip.domain.post.repository.PostRepository;
 import com.gumi.enjoytrip.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -27,7 +29,7 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public List<PostListDto> getPostList() {
-        return postRepository.findAll().stream()
+        return postRepository.findAllByOrderByIdDesc().stream()
                 .map(post -> toPostListDto(post, likePostRepository.countByPostId(post.getId())))
                 .toList();
     }
@@ -48,6 +50,7 @@ public class PostService {
 
     @Transactional
     public long updatePost(long id, PostUpdateDto postUpdateDto, User user) {
+        log.info("updatePost: {}", postUpdateDto);
         Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("존재하지 않는 게시글입니다."));
         if (!Objects.equals(post.getUser().getId(), user.getId())) {
             throw new InvalidUserException("작성자만 수정할 수 있습니다.");

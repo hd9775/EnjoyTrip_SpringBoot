@@ -2,6 +2,7 @@ package com.gumi.enjoytrip.domain.user.controller;
 
 import com.gumi.enjoytrip.domain.user.exception.DuplicateEmailException;
 import com.gumi.enjoytrip.domain.user.exception.InvalidPasswordException;
+import com.gumi.enjoytrip.domain.user.exception.LoginUserNotFoundException;
 import com.gumi.enjoytrip.domain.user.exception.UserNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class UserControllerAdvice {
     // 404 Not Found
-    @ExceptionHandler(UserNotFoundException.class)
+    @ExceptionHandler({UserNotFoundException.class, LoginUserNotFoundException.class})
     public ResponseEntity<Void> handleUserNotFoundException(UserNotFoundException e) {
         return ResponseEntity.notFound().build();
     }
