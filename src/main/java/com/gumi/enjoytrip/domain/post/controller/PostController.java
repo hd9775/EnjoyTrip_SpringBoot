@@ -6,7 +6,6 @@ import com.gumi.enjoytrip.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,8 +34,8 @@ public class PostController {
             @ApiResponse(responseCode = "200", description = "게시글 페이지 수 조회 성공")
     })
     @GetMapping("/page")
-    public ResponseEntity<Integer> getPageCount() {
-        return ResponseEntity.ok(postService.getPageCount());
+    public ResponseEntity<Integer> getPageCount(@RequestParam(value = "keyword", defaultValue = "") String keyword) {
+        return ResponseEntity.ok(postService.getPageCount(keyword));
     }
 
     @Operation(summary = "게시글 조회")
@@ -118,21 +117,19 @@ public class PostController {
             @ApiResponse(responseCode = "200", description = "댓글 목록 조회 성공"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다."),
     })
-    @GetMapping(value = "/{id}/comment")
-    public List<CommentListDto> getCommentList(@PathVariable long id) {
+    @GetMapping(value = "/{id}/comments")
+    public List<CommentListDto> getComments(@PathVariable long id) {
         return postService.getCommentList(id);
     }
 
     @Operation(summary = "댓글 작성")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "댓글 작성 성공"),
+            @ApiResponse(responseCode = "201", description = "댓글 작성 성공"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다."),
     })
-    @PostMapping(value = "/{id}/comment")
-    public ResponseEntity<Void> createComment(@PathVariable long id, @RequestBody CommentCreateDto commentCreateDto) {
-        System.out.println(commentCreateDto.getContent());
-        postService.createComment(id, userService.getLoginUser(), commentCreateDto);
-        return ResponseEntity.ok().build();
+    @PostMapping(value = "/{id}/comments")
+    public ResponseEntity<Long> createComment(@PathVariable long id, @RequestBody CommentCreateDto commentCreateDto) {
+        return ResponseEntity.created(null).body(postService.createComment(id, commentCreateDto, userService.getLoginUser()));
     }
 
     @Operation(summary = "댓글 삭제")
@@ -141,35 +138,35 @@ public class PostController {
             @ApiResponse(responseCode = "403", description = "작성자가 아닙니다."),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글입니다."),
     })
-    @DeleteMapping(value = "/{id}/comment")
-    public ResponseEntity<Void> deleteComment(@PathVariable long id) {
+    @DeleteMapping(value = "/{postId}/comments/{id}")
+    public ResponseEntity<Void> deleteComment(@PathVariable long postId, @PathVariable long id) {
         postService.deleteComment(id, userService.getLoginUser());
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "본인 작성글 조회")
-    @GetMapping(value = "/mypost")
-    public List<PostListDto> getMyPost(@RequestParam(value = "page", defaultValue = "1") int page) {
-        return postService.getMyPost(page, userService.getLoginUser());
-    }
+//    @Operation(summary = "본인 작성글 조회")
+//    @GetMapping(value = "/mypost")
+//    public List<PostListDto> getMyPost(@RequestParam(value = "page", defaultValue = "1") int page) {
+//        return postService.getMyPost(page, userService.getLoginUser());
+//    }
+//
+//    @Operation(summary = "댓글단 글 조회")
+//    @GetMapping(value = "/commentpost")
+//    public List<PostListDto> getCommentPost(@RequestParam(value = "page", defaultValue = "1") int page) {
+//        return postService.getPostListByMyCommentId(page, userService.getLoginUser());
+//    }
+//
+//    @Operation(summary = "좋아요한 글 조회")
+//    @GetMapping(value = "/likepost")
+//    public List<PostListDto> getLikePost(@RequestParam(value = "page", defaultValue = "1") int page) {
+//        return postService.getLikePost(page, userService.getLoginUser());
+//    }
 
-    @Operation(summary = "댓글단 글 조회")
-    @GetMapping(value = "/commentpost")
-    public List<PostListDto> getCommentPost(@RequestParam(value = "page", defaultValue = "1") int page) {
-        return postService.getCommentPost(page, userService.getLoginUser());
-    }
-
-    @Operation(summary = "좋아요한 글 조회")
-    @GetMapping(value = "/likepost")
-    public List<PostListDto> getLikePost(@RequestParam(value = "page", defaultValue = "1") int page) {
-        return postService.getLikePost(page, userService.getLoginUser());
-    }
-
-    @Operation(summary = "초기화면 최신 공지 조회")
-    @GetMapping(value = "/notice")
-    public List<PostListDto> getLatestNotice() {
-//        return postService.getLatestNotice();
-        return postService.getTopLikePost();
-    }
+//    @Operation(summary = "초기화면 최신 공지 조회")
+//    @GetMapping(value = "/notice")
+//    public List<PostListDto> getLatestNotice() {
+////        return postService.getLatestNotice();
+//        return postService.getTopLikePost();
+//    }
 
 }
