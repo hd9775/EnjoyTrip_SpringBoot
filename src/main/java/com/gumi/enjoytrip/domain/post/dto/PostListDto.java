@@ -15,6 +15,7 @@ public class PostListDto {
     private int views;
     private boolean isNotice;
     private int likeCount;
+    private int commentCount;
     private long creatorId;
     private String creatorNickname;
     private LocalDateTime createdAt;
