@@ -31,12 +31,14 @@ public class PostService {
     private final CommentRepository commentRepository;
 
     @Transactional(readOnly = true)
-    public List<PostListDto> getPostList(int page) {
+    public List<PostListDto> getPostList(int page, String keyword) {
         Pageable pageable = PageRequest.of(page - 1, 15);
-        return postRepository.findAllByOrderByIsNoticeDescIdDesc(pageable).stream()
+        return postRepository.findAllByTitleContainingIgnoreCaseOrderByIsNoticeDescIdDesc(keyword, pageable)
+                .stream()
                 .map(post -> toPostListDto(post, likePostRepository.countByPostId(post.getId())))
                 .toList();
     }
+
 
     @Transactional(readOnly = true)
     public int getPageCount() {

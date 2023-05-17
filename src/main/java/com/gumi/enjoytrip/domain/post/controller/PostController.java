@@ -25,8 +25,8 @@ public class PostController {
             @ApiResponse(responseCode = "200", description = "게시글 목록 조회 성공")
     })
     @GetMapping("")
-    public List<PostListDto> getPosts(@RequestParam(value = "page", defaultValue = "1") int page) {
-        return postService.getPostList(page);
+    public List<PostListDto> getPosts(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "keyword", defaultValue = "") String keyword) {
+        return postService.getPostList(page, keyword);
     }
 
     @Operation(summary = "게시글 페이지 수")
