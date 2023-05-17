@@ -6,6 +6,7 @@ import com.gumi.enjoytrip.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +26,8 @@ public class PostController {
             @ApiResponse(responseCode = "200", description = "게시글 목록 조회 성공")
     })
     @GetMapping("")
-    public List<PostListDto> getPosts(@RequestParam(value = "page", defaultValue = "1") int page) {
-        return postService.getPostList(page);
+    public List<PostListDto> getPosts(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "keyword", defaultValue = "") String keyword) {
+        return postService.getPostList(page, keyword);
     }
 
     @Operation(summary = "게시글 페이지 수")
@@ -145,4 +146,30 @@ public class PostController {
         postService.deleteComment(id, userService.getLoginUser());
         return ResponseEntity.ok().build();
     }
+
+    @Operation(summary = "본인 작성글 조회")
+    @GetMapping(value = "/mypost")
+    public List<PostListDto> getMyPost(@RequestParam(value = "page", defaultValue = "1") int page) {
+        return postService.getMyPost(page, userService.getLoginUser());
+    }
+
+    @Operation(summary = "댓글단 글 조회")
+    @GetMapping(value = "/commentpost")
+    public List<PostListDto> getCommentPost(@RequestParam(value = "page", defaultValue = "1") int page) {
+        return postService.getCommentPost(page, userService.getLoginUser());
+    }
+
+    @Operation(summary = "좋아요한 글 조회")
+    @GetMapping(value = "/likepost")
+    public List<PostListDto> getLikePost(@RequestParam(value = "page", defaultValue = "1") int page) {
+        return postService.getLikePost(page, userService.getLoginUser());
+    }
+
+    @Operation(summary = "초기화면 최신 공지 조회")
+    @GetMapping(value = "/notice")
+    public List<PostListDto> getLatestNotice() {
+//        return postService.getLatestNotice();
+        return postService.getTopLikePost();
+    }
+
 }

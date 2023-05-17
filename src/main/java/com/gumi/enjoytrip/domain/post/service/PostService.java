@@ -31,12 +31,14 @@ public class PostService {
     private final CommentRepository commentRepository;
 
     @Transactional(readOnly = true)
-    public List<PostListDto> getPostList(int page) {
+    public List<PostListDto> getPostList(int page, String keyword) {
         Pageable pageable = PageRequest.of(page - 1, 15);
-        return postRepository.findAllByOrderByIsNoticeDescIdDesc(pageable).stream()
+        return postRepository.findAllByTitleContainingIgnoreCaseOrderByIsNoticeDescIdDesc(keyword, pageable)
+                .stream()
                 .map(post -> toPostListDto(post, likePostRepository.countByPostId(post.getId())))
                 .toList();
     }
+
 
     @Transactional(readOnly = true)
     public int getPageCount() {
@@ -123,6 +125,31 @@ public class PostService {
         commentRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
+    public List<PostListDto> getMyPost(int page, User user) {
+        Pageable pageable = PageRequest.of(page - 1, 15);
+        return postRepository.findAllByUserIdOrderByIdDesc(user.getId(), pageable)
+                .stream()
+                .map(post -> toPostListDto(post, likePostRepository.countByPostId(post.getId())))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostListDto> getCommentPost(int page, User user) {
+        Pageable pageable = PageRequest.of(page - 1, 15);
+        return commentRepository.findAllByUserIdOrderByIdDesc(user.getId(), pageable).stream()
+                .map(comment -> toPostListDto(comment.getPost(), likePostRepository.countByPostId(comment.getPost().getId())))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostListDto> getLikePost(int page, User user) {
+        Pageable pageable = PageRequest.of(page - 1, 15);
+        return likePostRepository.findAllByUserIdOrderByIdDesc(user.getId(), pageable).stream()
+                .map(likePost -> toPostListDto(likePost.getPost(), likePostRepository.countByPostId(likePost.getPost().getId())))
+                .toList();
+    }
+
     public PostListDto toPostListDto(Post post, int likeCount) {
         return new PostListDto(
                 post.getId(),
@@ -169,5 +196,23 @@ public class PostService {
                 comment.getContent(),
                 comment.getCreatedAt()
         );
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<PostListDto> getLatestNotice() {
+        Pageable pageable = PageRequest.of(0, 5);
+        return postRepository.findAllByIsNoticeTrueOrderByCreatedAtDesc(pageable).stream()
+                .map(post -> toPostListDto(post, likePostRepository.countByPostId(post.getId())))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostListDto> getTopLikePost() {
+        Pageable pageable = PageRequest.of(0, 5);
+        return likePostRepository.findTop5LikeCountPost(pageable).stream()
+                .map(post -> toPostListDto(Objects.requireNonNull(postRepository.findById((Long) post[0]).orElse(null)), likePostRepository.countByPostId((Long) post[0])))
+                .toList();
+//        return null;
     }
 }
