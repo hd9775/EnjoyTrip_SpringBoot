@@ -144,29 +144,36 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-//    @Operation(summary = "본인 작성글 조회")
-//    @GetMapping(value = "/mypost")
-//    public List<PostListDto> getMyPost(@RequestParam(value = "page", defaultValue = "1") int page) {
-//        return postService.getMyPost(page, userService.getLoginUser());
-//    }
-//
-//    @Operation(summary = "댓글단 글 조회")
-//    @GetMapping(value = "/commentpost")
-//    public List<PostListDto> getCommentPost(@RequestParam(value = "page", defaultValue = "1") int page) {
-//        return postService.getPostListByMyCommentId(page, userService.getLoginUser());
-//    }
-//
-//    @Operation(summary = "좋아요한 글 조회")
-//    @GetMapping(value = "/likepost")
-//    public List<PostListDto> getLikePost(@RequestParam(value = "page", defaultValue = "1") int page) {
-//        return postService.getLikePost(page, userService.getLoginUser());
-//    }
+    @Operation(summary = "본인 작성글 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공")
+    })
+    @GetMapping(value = "/profile")
+    public List<PostListDto> getMyPost(@RequestParam(value = "type", defaultValue = "") String type, @RequestParam(value = "page", defaultValue = "1") int page) {
+        if(type.equals("post")) {
+            return postService.getMyPost(page, userService.getLoginUser());
+        } else if(type.equals("comment")) {
+            return postService.getPostListByMyCommentId(page, userService.getLoginUser());
+        } else if(type.equals("like")) {
+            return postService.getPostListByMyLikePost(page, userService.getLoginUser());
+        } else {
+            return null;
+        }
+    }
 
-//    @Operation(summary = "초기화면 최신 공지 조회")
-//    @GetMapping(value = "/notice")
-//    public List<PostListDto> getLatestNotice() {
-////        return postService.getLatestNotice();
-//        return postService.getTopLikePost();
-//    }
+    @Operation(summary = "홈화면 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공")
+    })
+    @GetMapping(value = "/home")
+    public List<PostTitleListDto> getLatestNotice(@RequestParam(value = "type", defaultValue = "") String type) {
+        if(type.equals("notice")) {
+            return postService.getLatestNotice();
+        } else if(type.equals("like")) {
+            return postService.getTopLikePost();
+        } else {
+            return null;
+        }
+    }
 
 }
