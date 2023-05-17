@@ -1,5 +1,6 @@
 package com.gumi.enjoytrip.domain.post.repository;
 
+import com.gumi.enjoytrip.domain.post.dto.PostListDto;
 import com.gumi.enjoytrip.domain.post.entity.Post;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +18,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     void increaseViews(long id);
 
     List<Post> findAllByTitleContainingIgnoreCaseOrderByIsNoticeDescIdDesc(String keyword, Pageable pageable);
+
+    List<Post> findAllByUserIdOrderByIdDesc(long userId, Pageable pageable);
+
+    List<Post> findAllByIsNoticeTrueOrderByCreatedAtDesc(Pageable pageable);
 }
