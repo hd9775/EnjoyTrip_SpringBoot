@@ -13,10 +13,11 @@ public class PostUpdateDto {
     private String title;
     private String content;
 
-    public Post toEntity() {
+    public Post toEntity(boolean isNotice) {
         return Post.builder()
                 .title(title)
                 .content(content)
+                .isNotice(isNotice)
                 .build();
     }
 }

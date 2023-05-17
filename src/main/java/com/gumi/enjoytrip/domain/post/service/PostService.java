@@ -64,7 +64,7 @@ public class PostService {
         if (!Objects.equals(post.getUser().getId(), user.getId())) {
             throw new InvalidUserException("작성자만 수정할 수 있습니다.");
         }
-        return postRepository.save(post.update(postUpdateDto.toEntity())).getId();
+        return postRepository.save(post.update(postUpdateDto.toEntity(post.getIsNotice()))).getId();
     }
 
     @Transactional
