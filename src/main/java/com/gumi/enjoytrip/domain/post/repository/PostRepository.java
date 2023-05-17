@@ -22,4 +22,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAllByIsNoticeTrueOrderByCreatedAtDesc(Pageable pageable);
 
     int countByTitleContainingIgnoreCase(String keyword);
+
+    List<Post> findAllByIsNoticeFalseOrderByCreatedAtDesc(Pageable pageable);
 }
