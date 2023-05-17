@@ -166,10 +166,10 @@ public class PostController {
             @ApiResponse(responseCode = "200", description = "조회 성공")
     })
     @GetMapping(value = "/home")
-    public List<PostTitleListDto> getLatestNotice(@RequestParam(value = "type", defaultValue = "") String type) {
+    public List<PostTitleListDto> getHomePosts(@RequestParam(value = "type", defaultValue = "") String type) {
         if(type.equals("notice")) {
             return postService.getLatestNotice();
-        } else if(type.equals("like")) {
+        } else if(type.equals("hot")) {
             return postService.getTopLikePost();
         } else if(type.equals("post")) {
             return postService.getLatestPost();
