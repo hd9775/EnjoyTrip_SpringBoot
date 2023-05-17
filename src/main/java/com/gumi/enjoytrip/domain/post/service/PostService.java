@@ -164,7 +164,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public List<PostTitleListDto> getLatestNotice() {
         Pageable pageable = PageRequest.of(0, 5);
-        return postRepository.findAllByIsNoticeTrueOrderByCreatedAtDesc(pageable).stream()
+        return postRepository.findAllByIsNoticeTrueOrderByIdDesc(pageable).stream()
                 .map(post -> toPostTitleList(post))
                 .toList();
     }
@@ -180,7 +180,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public List<PostTitleListDto> getLatestPost() {
         Pageable pageable = PageRequest.of(0, 5);
-        return postRepository.findAllByIsNoticeFalseOrderByCreatedAtDesc(pageable).stream()
+        return postRepository.findAllByIsNoticeFalseOrderByIdDesc(pageable).stream()
                 .map(post -> toPostTitleList(post))
                 .toList();
     }
