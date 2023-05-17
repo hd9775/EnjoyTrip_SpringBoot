@@ -153,6 +153,39 @@ public class PostService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    private PostTitleListDto toPostTitleList(Post post) {
+        return new PostTitleListDto(
+                post.getId(),
+                post.getTitle()
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostTitleListDto> getLatestNotice() {
+        Pageable pageable = PageRequest.of(0, 5);
+        return postRepository.findAllByIsNoticeTrueOrderByCreatedAtDesc(pageable).stream()
+                .map(post -> toPostTitleList(post))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostTitleListDto> getTopLikePost() {
+        Pageable pageable = PageRequest.of(0, 5);
+        return likePostRepository.findTop5LikeCountPost(pageable).stream()
+                .map(post -> toPostTitleList(postRepository.findById((Long) post[0]).orElse(null)))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostTitleListDto> getLatestPost() {
+        Pageable pageable = PageRequest.of(0, 5);
+        return postRepository.findAllByIsNoticeFalseOrderByCreatedAtDesc(pageable).stream()
+                .map(post -> toPostTitleList(post))
+                .toList();
+    }
+
+
     private PostListDto toPostListDto(Post post, int likeCount, int commentCount) {
         return new PostListDto(
                 post.getId(),
@@ -203,27 +236,4 @@ public class PostService {
         );
     }
 
-    private PostTitleListDto toPostTitleList(Post post) {
-        return new PostTitleListDto(
-                post.getId(),
-                post.getTitle()
-        );
-    }
-
-
-    @Transactional(readOnly = true)
-    public List<PostTitleListDto> getLatestNotice() {
-        Pageable pageable = PageRequest.of(0, 5);
-        return postRepository.findAllByIsNoticeTrueOrderByCreatedAtDesc(pageable).stream()
-                .map(post -> toPostTitleList(post))
-                .toList();
-    }
-
-    @Transactional(readOnly = true)
-    public List<PostTitleListDto> getTopLikePost() {
-        Pageable pageable = PageRequest.of(0, 5);
-        return likePostRepository.findTop5LikeCountPost(pageable).stream()
-                .map(post -> toPostTitleList(postRepository.findById((Long) post[0]).orElse(null)))
-                .toList();
-    }
 }

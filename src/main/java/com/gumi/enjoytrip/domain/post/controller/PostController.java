@@ -171,7 +171,9 @@ public class PostController {
             return postService.getLatestNotice();
         } else if(type.equals("like")) {
             return postService.getTopLikePost();
-        } else {
+        } else if(type.equals("post")) {
+            return postService.getLatestPost();
+        }else {
             return null;
         }
     }
