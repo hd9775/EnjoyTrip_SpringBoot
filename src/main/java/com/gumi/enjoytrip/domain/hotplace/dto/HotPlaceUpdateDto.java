@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -15,7 +16,7 @@ public class HotPlaceUpdateDto {
     private String name;
     private String content;
     private int placeType;
-    private Date visitDate;
+    private LocalDate visitDate;
 
     public HotPlace toEntity() {
         return HotPlace.builder()

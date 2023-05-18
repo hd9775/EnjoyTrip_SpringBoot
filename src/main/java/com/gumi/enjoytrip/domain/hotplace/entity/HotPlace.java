@@ -8,7 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.cglib.core.Local;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -42,7 +44,7 @@ public class HotPlace extends BaseTimeEntity {
     private String address;
 
     @Column(nullable = false)
-    private Date visitDate;
+    private LocalDate visitDate;
 
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -50,7 +52,7 @@ public class HotPlace extends BaseTimeEntity {
     private User user;
 
     @Builder
-    public HotPlace(String name, String content, Integer placeType, String imageFileName, Double latitude, Double longitude, String address, Date visitDate, User user) {
+    public HotPlace(String name, String content, Integer placeType, String imageFileName, Double latitude, Double longitude, String address, LocalDate visitDate, User user) {
         this.name = name;
         this.content = content;
         this.placeType = placeType;

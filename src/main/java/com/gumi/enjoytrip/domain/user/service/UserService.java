@@ -77,6 +77,7 @@ public class UserService {
                 user.getId(),
                 user.getEmail(),
                 user.getNickname(),
+                user.getImageFileName(),
                 user.getRole().name()
         );
     }
