@@ -12,10 +12,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Slf4j
@@ -29,15 +36,15 @@ public class HotPlaceController {
 
     @Operation(summary = "핫플레이스 생성")
     @ApiResponse(responseCode = "201", description = "핫플레이스 생성 성공")
-    @PostMapping("/")
-    public ResponseEntity<Long> createHotPlace(@RequestBody HotPlaceCreateDto hotPlaceCreateDto) {
+    @PostMapping("")
+    public ResponseEntity<Long> createHotPlace(@RequestParam("file") MultipartFile file, @ModelAttribute HotPlaceCreateDto hotPlaceCreateDto) {
         User user = userService.getLoginUser();
-        return ResponseEntity.created(null).body(hotPlaceService.createHotPlace(hotPlaceCreateDto, user));
+        return ResponseEntity.created(null).body(hotPlaceService.createHotPlace(hotPlaceCreateDto, file, user));
     }
 
     @Operation(summary = "핫플레이스 목록 조회")
     @ApiResponse(responseCode = "200", description = "핫플레이스 목록 조회 성공")
-    @GetMapping("/")
+    @GetMapping("")
     public List<HotPlaceListDto> getHotPlaces() {
         return hotPlaceService.getHotPlaceList();
     }
@@ -77,8 +84,22 @@ public class HotPlaceController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/upload")
-    public String uploadImage(@RequestParam("file") MultipartFile file) {
-        return hotPlaceService.uploadImage(file);
+    @GetMapping("/images/{filename}")
+    public ResponseEntity<Resource> getProfileImage(@PathVariable String filename) {
+        try {
+            Path imageFilePath = Paths.get("static/hot_place_images").resolve(filename).normalize();
+            Resource resource = new ClassPathResource(imageFilePath.toString());
+
+            String mediaType = Files.probeContentType(imageFilePath);
+            if (mediaType == null) {
+                mediaType = "application/octet-stream";
+            }
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(mediaType))
+                    .body(resource);
+        } catch (IOException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

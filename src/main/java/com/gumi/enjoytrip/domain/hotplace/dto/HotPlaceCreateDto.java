@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -15,20 +15,19 @@ public class HotPlaceCreateDto {
     private String name;
     private String content;
     private int placeType;
-    private String imageFileName;
     private double latitude;
     private double longitude;
-    private Date visitDate;
+    private LocalDate visitDate;
 
-    public HotPlace toEntity(User user, String address) {
+    public HotPlace toEntity(User user, String address, String imageFileName) {
         return HotPlace.builder()
                 .name(name)
                 .content(content)
                 .placeType(placeType)
-                .imageFileName(imageFileName)
                 .latitude(latitude)
                 .longitude(longitude)
                 .address(address)
+                .imageFileName(imageFileName)
                 .user(user)
                 .visitDate(visitDate)
                 .build();

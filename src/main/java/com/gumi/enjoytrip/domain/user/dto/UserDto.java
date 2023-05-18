@@ -11,5 +11,6 @@ public class UserDto {
 	private long id;
 	private String email;
 	private String nickname;
+	private String imageFileName;
 	private String role;
 }

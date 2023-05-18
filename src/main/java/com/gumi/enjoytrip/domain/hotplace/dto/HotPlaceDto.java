@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -12,13 +13,16 @@ import java.util.Date;
 @AllArgsConstructor
 public class HotPlaceDto {
 	private long id;
-	private String title;
+	private String name;
+	private String content;
 	private String address;
 	private int placeType;
+	private String imageFileName;
 	private LocalDateTime createdAt;
 	private long creatorId;
+	private String creatorImage;
 	private String creatorNickname;
 	private double latitude;
 	private double longitude;
-	private Date visitDate;
+	private LocalDate visitDate;
 }
