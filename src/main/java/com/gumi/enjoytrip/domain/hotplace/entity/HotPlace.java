@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.cglib.core.Local;
@@ -46,13 +47,17 @@ public class HotPlace extends BaseTimeEntity {
     @Column(nullable = false)
     private LocalDate visitDate;
 
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private Integer views;
+
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
     @Builder
-    public HotPlace(String name, String content, Integer placeType, String imageFileName, Double latitude, Double longitude, String address, LocalDate visitDate, User user) {
+    public HotPlace(String name, String content, Integer placeType, String imageFileName, Double latitude, Double longitude, String address, LocalDate visitDate, int views, User user) {
         this.name = name;
         this.content = content;
         this.placeType = placeType;
@@ -61,7 +66,12 @@ public class HotPlace extends BaseTimeEntity {
         this.longitude = longitude;
         this.address = address;
         this.visitDate = visitDate;
+        this.views = views;
         this.user = user;
+    }
+
+    public void increaseViews() {
+        this.views++;
     }
 
     public HotPlace update(HotPlace hotPlace) {

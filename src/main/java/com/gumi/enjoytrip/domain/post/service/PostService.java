@@ -54,6 +54,7 @@ public class PostService {
     public PostDto getPost(long id, User user) {
         Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("존재하지 않는 게시글입니다."));
         postRepository.increaseViews(id);
+        post.increaseViews();
         boolean isLiked = likePostRepository.countByPostIdAndUserId(id, user.getId()) != 0;
         int likeCount = likePostRepository.countByPostId(id);
         return toPostDto(post, isLiked, likeCount);
@@ -129,27 +130,29 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostListDto> getMyPost(int page, User user) {
+    public List<PostListDto> getPostListByUser(int page, long userId) {
         Pageable pageable = PageRequest.of(page - 1, 15);
-        return postRepository.findAllByUserIdOrderByIdDesc(user.getId(), pageable)
+        return postRepository.findAllByUserIdOrderByIdDesc(userId, pageable)
                 .stream()
                 .map(post -> toPostListDto(post, likePostRepository.countByPostId(post.getId()), commentRepository.countByPostId(post.getId())))
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<PostListDto> getPostListByMyCommentId(int page, User user) {
+    public List<PostListDto> getPostListByUserComment(int page, long userId) {
         Pageable pageable = PageRequest.of(page - 1, 15);
-        return commentRepository.findAllByUserIdOrderByIdDesc(user.getId(), pageable).stream()
-                .map(comment -> toPostListDto(comment.getPost(), likePostRepository.countByPostId(comment.getPost().getId()), commentRepository.countByPostId(comment.getPost().getId())))
+        return postRepository.findByUserCommentsUserOrderByUserCommentsPostIdDesc(userId, pageable)
+                .stream()
+                .map(post -> toPostListDto(post, likePostRepository.countByPostId(post.getId()), commentRepository.countByPostId(post.getId())))
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<PostListDto> getPostListByMyLikePost(int page, User user) {
+    public List<PostListDto> getPostListByUserLike(int page, long userId) {
         Pageable pageable = PageRequest.of(page - 1, 15);
-        return likePostRepository.findAllByUserIdOrderByIdDesc(user.getId(), pageable).stream()
-                .map(likePost -> toPostListDto(likePost.getPost(), likePostRepository.countByPostId(likePost.getPost().getId()), commentRepository.countByPostId(likePost.getPost().getId())))
+        return postRepository.findByUserLikesUserOrderByUserLikesPostIdDesc(userId, pageable)
+                .stream()
+                .map(post -> toPostListDto(post, likePostRepository.countByPostId(post.getId()), commentRepository.countByPostId(post.getId())))
                 .toList();
     }
 

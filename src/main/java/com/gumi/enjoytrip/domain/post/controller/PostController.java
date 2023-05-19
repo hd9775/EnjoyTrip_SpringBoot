@@ -144,38 +144,18 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "본인 작성글 조회")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "조회 성공")
-    })
-    @GetMapping(value = "/profile")
-    public List<PostListDto> getMyPost(@RequestParam(value = "type", defaultValue = "") String type, @RequestParam(value = "page", defaultValue = "1") int page) {
-        if(type.equals("post")) {
-            return postService.getMyPost(page, userService.getLoginUser());
-        } else if(type.equals("comment")) {
-            return postService.getPostListByMyCommentId(page, userService.getLoginUser());
-        } else if(type.equals("like")) {
-            return postService.getPostListByMyLikePost(page, userService.getLoginUser());
-        } else {
-            return null;
-        }
-    }
-
     @Operation(summary = "홈화면 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공")
     })
     @GetMapping(value = "/home")
     public List<PostTitleListDto> getHomePosts(@RequestParam(value = "type", defaultValue = "") String type) {
-        if(type.equals("notice")) {
-            return postService.getLatestNotice();
-        } else if(type.equals("hot")) {
-            return postService.getTopLikePost();
-        } else if(type.equals("latest")) {
-            return postService.getLatestPost();
-        }else {
-            return null;
-        }
+        return switch (type) {
+            case "notice" -> postService.getLatestNotice();
+            case "hot" -> postService.getTopLikePost();
+            case "latest" -> postService.getLatestPost();
+            default -> null;
+        };
     }
 
 }

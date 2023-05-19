@@ -1,6 +1,10 @@
 package com.gumi.enjoytrip.domain.user.service;
 
+import com.gumi.enjoytrip.domain.hotplace.repository.HotPlaceRepository;
+import com.gumi.enjoytrip.domain.post.repository.CommentRepository;
+import com.gumi.enjoytrip.domain.post.repository.PostRepository;
 import com.gumi.enjoytrip.domain.user.dto.LoginDto;
+import com.gumi.enjoytrip.domain.user.dto.ProfileDto;
 import com.gumi.enjoytrip.domain.user.dto.UserCreateDto;
 import com.gumi.enjoytrip.domain.user.dto.UserDto;
 import com.gumi.enjoytrip.domain.user.entity.Role;
@@ -22,6 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
+    private final HotPlaceRepository hotPlaceRepository;
 
     @Transactional(readOnly = true)
     public User login(LoginDto loginDto, PasswordEncoder passwordEncoder) {
@@ -66,6 +73,25 @@ public class UserService {
     public void deleteUser(User user) {
         userRepository.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
         userRepository.save(user.update(User.builder().isDeleted(true).email("").password("").nickname("탈퇴한 유저").build()));
+    }
+
+    @Transactional(readOnly = true)
+    public ProfileDto getProfile(long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
+        int postCount = postRepository.countByUserId(id);
+        int commentCount = commentRepository.countByUserId(id);
+        int hotPlaceCount = hotPlaceRepository.countByUserId(id);
+        return new ProfileDto(
+                user.getId(),
+                user.getEmail(),
+                user.getNickname(),
+                user.getImageFileName(),
+                user.getRole().name(),
+                user.getCreatedAt(),
+                postCount,
+                commentCount,
+                hotPlaceCount
+        );
     }
 
     public User getLoginUser() {

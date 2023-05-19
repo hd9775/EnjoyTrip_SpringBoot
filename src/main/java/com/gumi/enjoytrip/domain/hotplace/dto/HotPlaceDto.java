@@ -25,4 +25,5 @@ public class HotPlaceDto {
 	private double latitude;
 	private double longitude;
 	private LocalDate visitDate;
+	private int views;
 }
