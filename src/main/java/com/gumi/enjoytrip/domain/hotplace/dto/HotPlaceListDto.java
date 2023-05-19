@@ -13,7 +13,9 @@ public class HotPlaceListDto {
     private long id;
     private String name;
     private int placeType;
+    private String address;
     private String imageFileName;
+    private int views;
     private LocalDateTime createdAt;
     private long creatorId;
     private String creatorNickname;

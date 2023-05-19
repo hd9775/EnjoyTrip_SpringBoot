@@ -24,4 +24,12 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     int countByTitleContainingIgnoreCase(String keyword);
 
     List<Post> findAllByIsNoticeFalseOrderByIdDesc(Pageable pageable);
+
+    int countByUserId(long userId);
+
+    @Query("select p from Post p join Comment c on p.id = c.post.id where c.user.id = :userId order by p.id desc")
+    List<Post> findByUserCommentsUserOrderByUserCommentsPostIdDesc(Long userId, Pageable pageable);
+
+    @Query("select p from Post p join LikePost lp on p.id = lp.post.id where lp.user.id = :userId order by p.id desc")
+    List<Post> findByUserLikesUserOrderByUserLikesPostIdDesc(Long userId, Pageable pageable);
 }

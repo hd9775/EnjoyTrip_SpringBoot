@@ -52,9 +52,11 @@ public class HotPlaceService {
         return hotPlaceRepository.findAll().stream().map(this::toHotPlaceListDto).toList();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public HotPlaceDto getHotPlace(long id) {
         HotPlace hotPlace = hotPlaceRepository.findById(id).orElseThrow(() -> new HotPlaceNotFoundException("해당 핫플레이스가 존재하지 않습니다."));
+        hotPlaceRepository.increaseViews(id);
+        hotPlace.increaseViews();
         return toHotPlaceDto(hotPlace);
     }
 
@@ -151,7 +153,8 @@ public class HotPlaceService {
                 hotPlace.getUser().getNickname(),
                 hotPlace.getLatitude(),
                 hotPlace.getLongitude(),
-                hotPlace.getVisitDate()
+                hotPlace.getVisitDate(),
+                hotPlace.getViews()
         );
     }
 
@@ -160,7 +163,9 @@ public class HotPlaceService {
                 hotPlace.getId(),
                 hotPlace.getName(),
                 hotPlace.getPlaceType(),
+                hotPlace.getAddress(),
                 hotPlace.getImageFileName(),
+                hotPlace.getViews(),
                 hotPlace.getCreatedAt(),
                 hotPlace.getUser().getId(),
                 hotPlace.getUser().getNickname()

@@ -1,6 +1,9 @@
 package com.gumi.enjoytrip.domain.user.controller;
 
+import com.gumi.enjoytrip.domain.post.dto.PostListDto;
+import com.gumi.enjoytrip.domain.post.service.PostService;
 import com.gumi.enjoytrip.domain.user.dto.LoginDto;
+import com.gumi.enjoytrip.domain.user.dto.ProfileDto;
 import com.gumi.enjoytrip.domain.user.dto.UserCreateDto;
 import com.gumi.enjoytrip.domain.user.dto.UserDto;
 import com.gumi.enjoytrip.domain.user.entity.User;
@@ -25,6 +28,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -33,6 +37,7 @@ public class UserController {
 
     private final TokenService tokenService;
     private final UserService userService;
+    private final PostService postService;
     private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "로그인")
@@ -109,6 +114,16 @@ public class UserController {
         return ResponseEntity.ok(null);
     }
 
+    @Operation(summary = "회원정보 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원정보 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없습니다.")
+    })
+    @GetMapping("/{id}")
+    public ProfileDto getUser(@PathVariable Long id) {
+        return userService.getProfile(id);
+    }
+
     @Operation(summary = "내 정보 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "내 정보 조회 성공"),
@@ -117,6 +132,16 @@ public class UserController {
     @GetMapping("/me")
     public UserDto getMyUser() {
         return userService.getMyUser();
+    }
+
+    @GetMapping("/{id}/posts")
+    public List<PostListDto> getUserPosts(@PathVariable Long id, @RequestParam(value = "type", defaultValue = "") String type, @RequestParam(value = "page", defaultValue = "1") int page) {
+        return switch (type) {
+            case "post" -> postService.getPostListByUser(page, id);
+            case "like" -> postService.getPostListByUserLike(page, id);
+            case "comment" -> postService.getPostListByUserComment(page, id);
+            default -> null;
+        };
     }
 
     @GetMapping("/images/{filename}")
