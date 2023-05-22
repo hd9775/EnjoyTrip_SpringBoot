@@ -130,38 +130,45 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostListDto> getPostListByUser(int page, long userId) {
+    public List<PostListDto> getPostListByUser(int page, User user) {
         Pageable pageable = PageRequest.of(page - 1, 15);
-        return postRepository.findAllByUserIdOrderByIdDesc(userId, pageable)
+        return postRepository.findAllByUserIdOrderByIdDesc(user.getId(), pageable)
                 .stream()
                 .map(post -> toPostListDto(post, likePostRepository.countByPostId(post.getId()), commentRepository.countByPostId(post.getId())))
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<PostListDto> getPostListByUserComment(int page, long userId) {
+    public List<PostListDto> getPostListByUserComment(int page, User user) {
         Pageable pageable = PageRequest.of(page - 1, 15);
-        return postRepository.findByUserCommentsUserOrderByUserCommentsPostIdDesc(userId, pageable)
+        return postRepository.findByUserCommentsUserOrderByUserCommentsPostIdDesc(user.getId(), pageable)
                 .stream()
                 .map(post -> toPostListDto(post, likePostRepository.countByPostId(post.getId()), commentRepository.countByPostId(post.getId())))
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<PostListDto> getPostListByUserLike(int page, long userId) {
+    public List<PostListDto> getPostListByUserLike(int page, User user) {
         Pageable pageable = PageRequest.of(page - 1, 15);
-        return postRepository.findByUserLikesUserOrderByUserLikesPostIdDesc(userId, pageable)
+        return postRepository.findByUserLikesUserOrderByUserLikesPostIdDesc(user.getId(), pageable)
                 .stream()
                 .map(post -> toPostListDto(post, likePostRepository.countByPostId(post.getId()), commentRepository.countByPostId(post.getId())))
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    private PostTitleListDto toPostTitleList(Post post) {
-        return new PostTitleListDto(
-                post.getId(),
-                post.getTitle()
-        );
+    public int getPageCountByUserPost(User user) {
+        return (int) Math.ceil((double) postRepository.countByUserId(user.getId()) / 15);
+    }
+
+    @Transactional(readOnly = true)
+    public int getPageCountByUserComment(User user) {
+        return (int) Math.ceil((double) commentRepository.countByUserIdGroupByPostId(user.getId()) / 15);
+    }
+
+    @Transactional(readOnly = true)
+    public int getPageCountByUserLike(User user) {
+        return (int) Math.ceil((double) likePostRepository.countByUserId(user.getId()) / 15);
     }
 
     @Transactional(readOnly = true)
@@ -236,6 +243,13 @@ public class PostService {
                 comment.getUser().getNickname(),
                 comment.getUser().getImageFileName(),
                 comment.getCreatedAt()
+        );
+    }
+
+    private PostTitleListDto toPostTitleList(Post post) {
+        return new PostTitleListDto(
+                post.getId(),
+                post.getTitle()
         );
     }
 
