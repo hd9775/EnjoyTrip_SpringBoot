@@ -13,6 +13,8 @@ import com.gumi.enjoytrip.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -49,8 +51,9 @@ public class HotPlaceService {
     }
 
     @Transactional(readOnly = true)
-    public List<HotPlaceListDto> getHotPlaceList() {
-        return hotPlaceRepository.findAll().stream().map(this::toHotPlaceListDto).toList();
+    public List<HotPlaceListDto> getHotPlaceList(int page, String keyword) {
+        Pageable pageable = PageRequest.of(page - 1, 12);
+        return hotPlaceRepository.findAllByNameContainingIgnoreCaseOrderByIdDesc(pageable, keyword).stream().map(this::toHotPlaceListDto).toList();
     }
 
     @Transactional(readOnly = true)
