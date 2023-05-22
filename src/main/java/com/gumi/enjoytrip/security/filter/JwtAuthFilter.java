@@ -31,6 +31,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = extractTokenFromRequest(request);
+        if(isPermitAllRequest(request))
+        {
+            filterChain.doFilter(request, response);
+            return;
+        }
         if (StringUtils.hasText(token)) {
             // 토큰이 있는 경우
             if (tokenService.verifyToken(token)) {
@@ -44,15 +49,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             } else {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             }
-        } else {
-            // 토큰이 없는 경우
-            // permitAll()로 허용한 URL 패턴에 대해서는 인증 처리를 수행하지 않고 통과시킴
-            if (isPermitAllRequest(request)) {
-                filterChain.doFilter(request, response);
-            } else {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            }
         }
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
     private String extractTokenFromRequest(HttpServletRequest request) {
@@ -73,6 +71,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         // HttpSecurity 클래스에서 permitAll()로 허용한 URL 패턴 가져오기
         matchers.add(new AntPathRequestMatcher("/api/v1/users/login"));
         matchers.add(new AntPathRequestMatcher("/api/v1/users/join"));
+        matchers.add(new AntPathRequestMatcher("/api/v1/users/refresh-token"));
         matchers.add(new AntPathRequestMatcher("/api/v1/users/images/**"));
         matchers.add(new AntPathRequestMatcher("/api/v1/hot-places/images/**"));
         matchers.add(new AntPathRequestMatcher("/api/v1/tours/**"));
