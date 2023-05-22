@@ -16,10 +16,11 @@ public interface LikePostRepository extends JpaRepository<LikePost, Long> {
     List<LikePost> findAllByPostId(long postId);
     List<LikePost> findAllByUserIdOrderByIdDesc(long userId, Pageable pageable);
 
-
     @Query("SELECT lp.post.id, COUNT(lp.post.id) AS count " +
             "FROM LikePost lp " +
             "GROUP BY lp.post.id " +
             "ORDER BY count DESC, lp.post.id DESC ")
     List<Object[]> findTop5LikeCountPost(Pageable pageable);
+
+    int countByUserId(long userId);
 }

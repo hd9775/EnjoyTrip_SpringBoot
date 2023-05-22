@@ -32,4 +32,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("select p from Post p join LikePost lp on p.id = lp.post.id where lp.user.id = :userId order by p.id desc")
     List<Post> findByUserLikesUserOrderByUserLikesPostIdDesc(Long userId, Pageable pageable);
+
 }

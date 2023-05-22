@@ -158,4 +158,31 @@ public class PostController {
         };
     }
 
+    @Operation(summary = "게시글 페이지 수")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "게시글 페이지 수 조회 성공")
+    })
+    @GetMapping("/profile-page")
+    public ResponseEntity<Integer> getPageCountOnProfile(@RequestParam(value = "type") String type) {
+        return switch (type) {
+            case "post" -> ResponseEntity.ok(postService.getPageCountByUserPost(userService.getLoginUser()));
+            case "like" -> ResponseEntity.ok(postService.getPageCountByUserLike(userService.getLoginUser()));
+            case "comment" -> ResponseEntity.ok(postService.getPageCountByUserComment(userService.getLoginUser()));
+            default -> null;
+        };
+    }
+
+    @Operation(summary = "프로파일 게시글 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "게시글 조회 성공")
+    })
+    @GetMapping("/profile-posts")
+    public List<PostListDto> getUserPosts(@RequestParam(value = "type", defaultValue = "") String type, @RequestParam(value = "page", defaultValue = "1") int page) {
+        return switch (type) {
+            case "post" -> postService.getPostListByUser(page, userService.getLoginUser());
+            case "like" -> postService.getPostListByUserLike(page, userService.getLoginUser());
+            case "comment" -> postService.getPostListByUserComment(page, userService.getLoginUser());
+            default -> null;
+        };
+    }
 }

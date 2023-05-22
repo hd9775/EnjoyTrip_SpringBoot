@@ -134,16 +134,6 @@ public class UserController {
         return userService.getMyUser();
     }
 
-    @GetMapping("/{id}/posts")
-    public List<PostListDto> getUserPosts(@PathVariable Long id, @RequestParam(value = "type", defaultValue = "") String type, @RequestParam(value = "page", defaultValue = "1") int page) {
-        return switch (type) {
-            case "post" -> postService.getPostListByUser(page, id);
-            case "like" -> postService.getPostListByUserLike(page, id);
-            case "comment" -> postService.getPostListByUserComment(page, id);
-            default -> null;
-        };
-    }
-
     @GetMapping("/images/{filename}")
     public ResponseEntity<Resource> getProfileImage(@PathVariable String filename) {
         try {
