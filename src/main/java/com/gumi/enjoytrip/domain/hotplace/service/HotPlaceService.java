@@ -13,6 +13,8 @@ import com.gumi.enjoytrip.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -39,6 +41,7 @@ public class HotPlaceService {
         String address = kakaoRestClient.getAddress(hotPlaceCreateDto.getLongitude(), hotPlaceCreateDto.getLatitude());
         String saveFileName = null;
         try {
+            System.out.println(imageFile.getName());
             saveFileName = saveImageFile(imageFile);
         } catch (IOException e) {
             e.printStackTrace();
@@ -48,8 +51,14 @@ public class HotPlaceService {
     }
 
     @Transactional(readOnly = true)
-    public List<HotPlaceListDto> getHotPlaceList() {
-        return hotPlaceRepository.findAll().stream().map(this::toHotPlaceListDto).toList();
+    public List<HotPlaceListDto> getHotPlaceList(int page, String keyword) {
+        Pageable pageable = PageRequest.of(page - 1, 12);
+        return hotPlaceRepository.findAllByNameContainingIgnoreCaseOrderByIdDesc(pageable, keyword).stream().map(this::toHotPlaceListDto).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public int getPageCount(String keyword) {
+        return (int) Math.ceil((double) hotPlaceRepository.countByNameContainingIgnoreCase(keyword) / 12);
     }
 
     @Transactional
@@ -171,4 +180,5 @@ public class HotPlaceService {
                 hotPlace.getUser().getNickname()
         );
     }
+
 }

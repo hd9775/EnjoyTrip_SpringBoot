@@ -45,8 +45,17 @@ public class HotPlaceController {
     @Operation(summary = "핫플레이스 목록 조회")
     @ApiResponse(responseCode = "200", description = "핫플레이스 목록 조회 성공")
     @GetMapping("")
-    public List<HotPlaceListDto> getHotPlaces() {
-        return hotPlaceService.getHotPlaceList();
+    public List<HotPlaceListDto> getHotPlaces(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "keyword", defaultValue = "") String keyword) {
+        return hotPlaceService.getHotPlaceList(page, keyword);
+    }
+
+    @Operation(summary = "핫플레이스 페이지 수")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "핫플레이스 페이지 수 조회 성공")
+    })
+    @GetMapping("/page")
+    public ResponseEntity<Integer> getPageCount(@RequestParam(value = "keyword", defaultValue = "") String keyword) {
+        return ResponseEntity.ok(hotPlaceService.getPageCount(keyword));
     }
 
     @Operation(summary = "핫플레이스 상세 조회")
