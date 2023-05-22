@@ -111,4 +111,28 @@ public class HotPlaceController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @Operation(summary = "핫플레이스 페이지 수")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "핫플레이스 페이지 수 조회 성공")
+    })
+    @GetMapping("/profile-page")
+    public ResponseEntity<Integer> getPageCountOnProfile(@RequestParam(value = "type", defaultValue = "") String type) {
+        return switch (type) {
+            case "hotPlace" -> ResponseEntity.ok(hotPlaceService.getPageCountByUserPost(userService.getLoginUser()));
+            default -> null;
+        };
+    }
+
+    @Operation(summary = "프로파일 핫플레이스 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "핫플레이스 조회 성공")
+    })
+    @GetMapping("/profile-posts")
+    public List<HotPlaceListDto> getUserPosts(@RequestParam(value = "type", defaultValue = "") String type, @RequestParam(value = "page", defaultValue = "1") int page) {
+        return switch (type) {
+            case "hotPlace" -> hotPlaceService.getPostListByUser(page, userService.getLoginUser());
+            default -> null;
+        };
+    }
 }
