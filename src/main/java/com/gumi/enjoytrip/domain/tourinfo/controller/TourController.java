@@ -2,6 +2,7 @@ package com.gumi.enjoytrip.domain.tourinfo.controller;
 
 import com.gumi.enjoytrip.domain.tourinfo.dto.AttractionListDto;
 import com.gumi.enjoytrip.domain.tourinfo.dto.GugunListDto;
+import com.gumi.enjoytrip.domain.tourinfo.dto.PathDto;
 import com.gumi.enjoytrip.domain.tourinfo.dto.SidoListDto;
 import com.gumi.enjoytrip.domain.tourinfo.service.TourService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,5 +44,16 @@ public class TourController {
     @GetMapping("/attractions")
     public List<AttractionListDto> getAttractions(@RequestParam int sidoCode, @RequestParam int gugunCode, @RequestParam int contentTypeId) {
         return tourService.getAttractionList(sidoCode, gugunCode, contentTypeId);
+    }
+
+    @Operation(summary = "경로 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "경로 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "관광지가 존재하지 않습니다.")
+    })
+    @GetMapping("/paths")
+    public PathDto getPath(@RequestParam int contentId, @RequestParam String keyword)
+    {
+        return tourService.getPath(contentId, keyword);
     }
 }
