@@ -1,7 +1,6 @@
 package com.gumi.enjoytrip.domain.user.entity;
 
 import com.gumi.enjoytrip.domain.BaseTimeEntity;
-import com.gumi.enjoytrip.domain.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -56,6 +55,10 @@ public class User extends BaseTimeEntity {
         if(user.isDeleted != null)
             this.isDeleted = user.isDeleted;
         return this;
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     @Builder

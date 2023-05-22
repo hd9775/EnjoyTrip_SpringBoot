@@ -115,8 +115,11 @@ public class UserService {
     }
 
     public void logout() {
+        User user = getLoginUser();
         if (SecurityContextHolder.getContext().getAuthentication() == null)
             throw new LoginUserNotFoundException("로그인된 사용자가 없습니다.");
         SecurityContextHolder.clearContext();
+        user.updateRefreshToken(null);
+        userRepository.save(user);
     }
 }
