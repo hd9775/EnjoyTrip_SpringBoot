@@ -14,4 +14,6 @@ public interface HotPlaceRepository extends JpaRepository<HotPlace, Long> {
     void increaseViews(long id);
 
     int countByUserId(long id);
+
+    int countByNameContainingIgnoreCase(String keyword);
 }

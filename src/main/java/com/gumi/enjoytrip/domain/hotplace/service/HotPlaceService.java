@@ -39,6 +39,7 @@ public class HotPlaceService {
         String address = kakaoRestClient.getAddress(hotPlaceCreateDto.getLongitude(), hotPlaceCreateDto.getLatitude());
         String saveFileName = null;
         try {
+            System.out.println(imageFile.getName());
             saveFileName = saveImageFile(imageFile);
         } catch (IOException e) {
             e.printStackTrace();
@@ -50,6 +51,11 @@ public class HotPlaceService {
     @Transactional(readOnly = true)
     public List<HotPlaceListDto> getHotPlaceList() {
         return hotPlaceRepository.findAll().stream().map(this::toHotPlaceListDto).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public int getPageCount(String keyword) {
+        return (int) Math.ceil((double) hotPlaceRepository.countByNameContainingIgnoreCase(keyword) / 12);
     }
 
     @Transactional
@@ -171,4 +177,5 @@ public class HotPlaceService {
                 hotPlace.getUser().getNickname()
         );
     }
+
 }
