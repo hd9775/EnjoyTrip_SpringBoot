@@ -99,6 +99,20 @@ public class HotPlaceService {
         hotPlaceRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
+    public int getPageCountByUserPost(User user) {
+        return (int) Math.ceil((double) hotPlaceRepository.countByUserId(user.getId()) / 15);
+    }
+
+    @Transactional(readOnly = true)
+    public List<HotPlaceListDto> getPostListByUser(int page, User user) {
+        Pageable pageable = PageRequest.of(page - 1, 15);
+        return hotPlaceRepository.findAllByUserIdOrderByIdDesc(user.getId(), pageable)
+                .stream()
+                .map(hotPlace -> toHotPlaceListDto(hotPlace))
+                .toList();
+    }
+
     private String saveImageFile(MultipartFile imageFile) throws IOException {
         String originalFilename = imageFile.getOriginalFilename();
         String fileExtension = StringUtils.getFilenameExtension(originalFilename);

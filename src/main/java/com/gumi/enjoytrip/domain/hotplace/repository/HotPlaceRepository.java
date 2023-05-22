@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -22,4 +21,6 @@ public interface HotPlaceRepository extends JpaRepository<HotPlace, Long> {
     int countByNameContainingIgnoreCase(String keyword);
 
     List<HotPlace> findAllByNameContainingIgnoreCaseOrderByIdDesc(Pageable pageable, String keyword);
+
+    List<HotPlace> findAllByUserIdOrderByIdDesc(long id, Pageable pageable);
 }

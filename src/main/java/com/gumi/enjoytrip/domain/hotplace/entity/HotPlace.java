@@ -9,10 +9,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Getter
