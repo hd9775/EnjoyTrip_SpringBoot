@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @NoArgsConstructor
 @Getter
 @Setter
@@ -14,4 +16,7 @@ public class PathDto {
     private int distance;
     private int taxiFare;
     private int tollFare;
+    private double longitude;
+    private double latitude;
+    private List<RoadListDto> roadList;
 }
