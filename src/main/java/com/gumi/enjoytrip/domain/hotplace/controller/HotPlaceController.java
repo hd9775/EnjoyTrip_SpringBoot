@@ -116,10 +116,10 @@ public class HotPlaceController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "핫플레이스 페이지 수 조회 성공")
     })
-    @GetMapping("/profile-page")
-    public ResponseEntity<Integer> getPageCountOnProfile(@RequestParam(value = "type", defaultValue = "") String type) {
+    @GetMapping("/profile-page/{id}")
+    public ResponseEntity<Integer> getPageCountOnProfile(@RequestParam(value = "type", defaultValue = "") String type, @PathVariable long id) {
         return switch (type) {
-            case "hotPlace" -> ResponseEntity.ok(hotPlaceService.getPageCountByUserPost(userService.getLoginUser()));
+            case "hotPlace" -> ResponseEntity.ok(hotPlaceService.getPageCountByUserPost(id));
             default -> null;
         };
     }
@@ -128,10 +128,10 @@ public class HotPlaceController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "핫플레이스 조회 성공")
     })
-    @GetMapping("/profile-posts")
-    public List<HotPlaceListDto> getUserPosts(@RequestParam(value = "type", defaultValue = "") String type, @RequestParam(value = "page", defaultValue = "1") int page) {
+    @GetMapping("/profile-posts/{id}")
+    public List<HotPlaceListDto> getUserPosts(@RequestParam(value = "type", defaultValue = "") String type, @RequestParam(value = "page", defaultValue = "1") int page, @PathVariable long id) {
         return switch (type) {
-            case "hotPlace" -> hotPlaceService.getPostListByUser(page, userService.getLoginUser());
+            case "hotPlace" -> hotPlaceService.getPostListByUser(page, id);
             default -> null;
         };
     }

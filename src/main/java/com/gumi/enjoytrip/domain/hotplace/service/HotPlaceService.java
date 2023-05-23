@@ -100,14 +100,14 @@ public class HotPlaceService {
     }
 
     @Transactional(readOnly = true)
-    public int getPageCountByUserPost(User user) {
-        return (int) Math.ceil((double) hotPlaceRepository.countByUserId(user.getId()) / 15);
+    public int getPageCountByUserPost(long id) {
+        return (int) Math.ceil((double) hotPlaceRepository.countByUserId(id) / 15);
     }
 
     @Transactional(readOnly = true)
-    public List<HotPlaceListDto> getPostListByUser(int page, User user) {
+    public List<HotPlaceListDto> getPostListByUser(int page, long id) {
         Pageable pageable = PageRequest.of(page - 1, 15);
-        return hotPlaceRepository.findAllByUserIdOrderByIdDesc(user.getId(), pageable)
+        return hotPlaceRepository.findAllByUserIdOrderByIdDesc(id, pageable)
                 .stream()
                 .map(hotPlace -> toHotPlaceListDto(hotPlace))
                 .toList();
