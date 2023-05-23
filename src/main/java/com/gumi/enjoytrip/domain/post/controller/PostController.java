@@ -162,12 +162,12 @@ public class PostController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "게시글 페이지 수 조회 성공")
     })
-    @GetMapping("/profile-page")
-    public ResponseEntity<Integer> getPageCountOnProfile(@RequestParam(value = "type") String type) {
+    @GetMapping("/profile-page/{id}")
+    public ResponseEntity<Integer> getPageCountOnProfile(@RequestParam(value = "type") String type, @PathVariable long id) {
         return switch (type) {
-            case "post" -> ResponseEntity.ok(postService.getPageCountByUserPost(userService.getLoginUser()));
-            case "like" -> ResponseEntity.ok(postService.getPageCountByUserLike(userService.getLoginUser()));
-            case "comment" -> ResponseEntity.ok(postService.getPageCountByUserComment(userService.getLoginUser()));
+            case "post" -> ResponseEntity.ok(postService.getPageCountByUserPost(id));
+            case "like" -> ResponseEntity.ok(postService.getPageCountByUserLike(id));
+            case "comment" -> ResponseEntity.ok(postService.getPageCountByUserComment(id));
             default -> null;
         };
     }
@@ -176,12 +176,13 @@ public class PostController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "게시글 조회 성공")
     })
-    @GetMapping("/profile-posts")
-    public List<PostListDto> getUserPosts(@RequestParam(value = "type", defaultValue = "") String type, @RequestParam(value = "page", defaultValue = "1") int page) {
+    @GetMapping("/profile-posts/{id}")
+    public List<PostListDto> getUserPosts(@RequestParam(value = "type", defaultValue = "") String type, @RequestParam(value = "page", defaultValue = "1") int page, @PathVariable(value = "id") long id) {
+        System.out.println(id+" 게시글 조회");
         return switch (type) {
-            case "post" -> postService.getPostListByUser(page, userService.getLoginUser());
-            case "like" -> postService.getPostListByUserLike(page, userService.getLoginUser());
-            case "comment" -> postService.getPostListByUserComment(page, userService.getLoginUser());
+            case "post" -> postService.getPostListByUser(page, id);
+            case "like" -> postService.getPostListByUserLike(page, id);
+            case "comment" -> postService.getPostListByUserComment(page, id);
             default -> null;
         };
     }

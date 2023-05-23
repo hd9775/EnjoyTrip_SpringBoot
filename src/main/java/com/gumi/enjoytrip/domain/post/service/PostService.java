@@ -130,45 +130,45 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostListDto> getPostListByUser(int page, User user) {
+    public List<PostListDto> getPostListByUser(int page, long id) {
         Pageable pageable = PageRequest.of(page - 1, 15);
-        return postRepository.findAllByUserIdOrderByIdDesc(user.getId(), pageable)
+        return postRepository.findAllByUserIdOrderByIdDesc(id, pageable)
                 .stream()
                 .map(post -> toPostListDto(post, likePostRepository.countByPostId(post.getId()), commentRepository.countByPostId(post.getId())))
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<PostListDto> getPostListByUserComment(int page, User user) {
+    public List<PostListDto> getPostListByUserComment(int page, long id) {
         Pageable pageable = PageRequest.of(page - 1, 15);
-        return postRepository.findByUserCommentsUserOrderByUserCommentsPostIdDesc(user.getId(), pageable)
+        return postRepository.findByUserCommentsUserOrderByUserCommentsPostIdDesc(id, pageable)
                 .stream()
                 .map(post -> toPostListDto(post, likePostRepository.countByPostId(post.getId()), commentRepository.countByPostId(post.getId())))
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<PostListDto> getPostListByUserLike(int page, User user) {
+    public List<PostListDto> getPostListByUserLike(int page, long id) {
         Pageable pageable = PageRequest.of(page - 1, 15);
-        return postRepository.findByUserLikesUserOrderByUserLikesPostIdDesc(user.getId(), pageable)
+        return postRepository.findByUserLikesUserOrderByUserLikesPostIdDesc(id, pageable)
                 .stream()
                 .map(post -> toPostListDto(post, likePostRepository.countByPostId(post.getId()), commentRepository.countByPostId(post.getId())))
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public int getPageCountByUserPost(User user) {
-        return (int) Math.ceil((double) postRepository.countByUserId(user.getId()) / 15);
+    public int getPageCountByUserPost(long id) {
+        return (int) Math.ceil((double) postRepository.countByUserId(id) / 15);
     }
 
     @Transactional(readOnly = true)
-    public int getPageCountByUserComment(User user) {
-        return (int) Math.ceil((double) commentRepository.countByUserIdGroupByPostId(user.getId()) / 15);
+    public int getPageCountByUserComment(long id) {
+        return (int) Math.ceil((double) commentRepository.countByUserIdGroupByPostId(id) / 15);
     }
 
     @Transactional(readOnly = true)
-    public int getPageCountByUserLike(User user) {
-        return (int) Math.ceil((double) likePostRepository.countByUserId(user.getId()) / 15);
+    public int getPageCountByUserLike(long id) {
+        return (int) Math.ceil((double) likePostRepository.countByUserId(id) / 15);
     }
 
     @Transactional(readOnly = true)
