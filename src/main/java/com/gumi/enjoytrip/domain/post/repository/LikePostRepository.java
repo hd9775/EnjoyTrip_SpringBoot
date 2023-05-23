@@ -11,9 +11,13 @@ import java.util.List;
 @Repository
 public interface LikePostRepository extends JpaRepository<LikePost, Long> {
     int countByPostId(long postId);
+
     int countByPostIdAndUserId(long postId, long userId);
+
     void deleteByPostIdAndUserId(long postId, long userId);
+
     List<LikePost> findAllByPostId(long postId);
+
     List<LikePost> findAllByUserIdOrderByIdDesc(long userId, Pageable pageable);
 
     @Query("SELECT lp.post.id, COUNT(lp.post.id) AS count " +

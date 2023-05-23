@@ -73,19 +73,19 @@ public class HotPlace extends BaseTimeEntity {
     }
 
     public HotPlace update(HotPlace hotPlace) {
-        if(hotPlace.getName() != null)
+        if (hotPlace.getName() != null)
             this.name = hotPlace.getName();
-        if(hotPlace.getContent() != null)
+        if (hotPlace.getContent() != null)
             this.content = hotPlace.getContent();
-        if(hotPlace.getPlaceType() != null)
+        if (hotPlace.getPlaceType() != null)
             this.placeType = hotPlace.getPlaceType();
-        if(hotPlace.getLatitude() != null)
+        if (hotPlace.getLatitude() != null)
             this.latitude = hotPlace.getLatitude();
-        if(hotPlace.getLongitude() != null)
+        if (hotPlace.getLongitude() != null)
             this.longitude = hotPlace.getLongitude();
-        if(hotPlace.getAddress() != null)
+        if (hotPlace.getAddress() != null)
             this.address = hotPlace.getAddress();
-        if(hotPlace.getVisitDate() != null)
+        if (hotPlace.getVisitDate() != null)
             this.visitDate = hotPlace.getVisitDate();
         return this;
     }

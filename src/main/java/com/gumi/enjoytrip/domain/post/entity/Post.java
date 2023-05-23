@@ -41,20 +41,6 @@ public class Post extends BaseTimeEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
-    public Post update(Post post) {
-        if(post.title != null)
-            this.title = post.title;
-        if(post.content != null)
-            this.content = post.content;
-        if(post.isNotice != null)
-            this.isNotice = post.isNotice;
-        return this;
-    }
-
-    public void increaseViews() {
-        this.views++;
-    }
-
     @Builder
     public Post(String title, String content, int views, boolean isNotice, User user) {
         this.title = title;
@@ -62,5 +48,19 @@ public class Post extends BaseTimeEntity {
         this.views = views;
         this.isNotice = isNotice;
         this.user = user;
+    }
+
+    public Post update(Post post) {
+        if (post.title != null)
+            this.title = post.title;
+        if (post.content != null)
+            this.content = post.content;
+        if (post.isNotice != null)
+            this.isNotice = post.isNotice;
+        return this;
+    }
+
+    public void increaseViews() {
+        this.views++;
     }
 }

@@ -16,7 +16,7 @@ import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
-public class TokenService{
+public class TokenService {
 
     private static final String SECRET_KEY = "secret-key";
     private static final long ACCESS_TOKEN_VALIDITY_SECONDS = 60 * 60; // 1시간

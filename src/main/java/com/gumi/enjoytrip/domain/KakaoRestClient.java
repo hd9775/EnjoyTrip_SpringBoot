@@ -104,13 +104,13 @@ public class KakaoRestClient {
             pathDto.setTollFare(fare.getInt("toll"));
             pathDto.setLongitude((start.getLongitude() + end.getLongitude()) / 2);
             pathDto.setLatitude((start.getLatitude() + end.getLatitude()) / 2);
-            for(int i = 0; i < roads.length(); i++) {
+            for (int i = 0; i < roads.length(); i++) {
                 RoadListDto roadListDto = new RoadListDto();
                 List<CoordinateDto> coordinateDtos = new ArrayList<>();
                 JSONObject road = roads.getJSONObject(i);
                 JSONArray vertexes = road.getJSONArray("vertexes");
                 int trafficState = road.getInt("traffic_state");
-                for(int j = 0; j < vertexes.length(); j += 2) {
+                for (int j = 0; j < vertexes.length(); j += 2) {
                     CoordinateDto coordinateDto = new CoordinateDto();
                     coordinateDto.setLongitude(vertexes.getDouble(j));
                     coordinateDto.setLatitude(vertexes.getDouble(j + 1));

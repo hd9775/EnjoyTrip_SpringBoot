@@ -41,26 +41,6 @@ public class User extends BaseTimeEntity {
     @ColumnDefault("false")
     private Boolean isDeleted;
 
-    public User update(User user) {
-        if(user.email != null)
-            this.email = user.email;
-        if(user.nickname != null)
-            this.nickname = user.nickname;
-        if(user.password != null)
-            this.password = user.password;
-        if(user.imageFileName != null)
-            this.imageFileName = user.imageFileName;
-        if(user.refreshToken != null)
-            this.refreshToken = user.refreshToken;
-        if(user.isDeleted != null)
-            this.isDeleted = user.isDeleted;
-        return this;
-    }
-
-    public void updateRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
-
     @Builder
     public User(String email, String password, String nickname, String imageFileName, Role role, String refreshToken, Boolean isDeleted) {
         this.email = email;
@@ -70,5 +50,25 @@ public class User extends BaseTimeEntity {
         this.role = role;
         this.refreshToken = refreshToken;
         this.isDeleted = isDeleted;
+    }
+
+    public User update(User user) {
+        if (user.email != null)
+            this.email = user.email;
+        if (user.nickname != null)
+            this.nickname = user.nickname;
+        if (user.password != null)
+            this.password = user.password;
+        if (user.imageFileName != null)
+            this.imageFileName = user.imageFileName;
+        if (user.refreshToken != null)
+            this.refreshToken = user.refreshToken;
+        if (user.isDeleted != null)
+            this.isDeleted = user.isDeleted;
+        return this;
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }

@@ -52,8 +52,7 @@ public class TourController {
             @ApiResponse(responseCode = "404", description = "관광지가 존재하지 않습니다.")
     })
     @GetMapping("/paths")
-    public PathDto getPath(@RequestParam int contentId, @RequestParam String keyword)
-    {
+    public PathDto getPath(@RequestParam int contentId, @RequestParam String keyword) {
         return tourService.getPath(contentId, keyword);
     }
 }

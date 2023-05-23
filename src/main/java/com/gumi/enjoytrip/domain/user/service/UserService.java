@@ -203,7 +203,7 @@ public class UserService {
     }
 
     private void deleteProfileImage(String fileName) throws IOException {
-        if(fileName.equals("default.png")) return;
+        if (fileName.equals("default.png")) return;
         Path filePath = new ClassPathResource("static/profile_images").getFile().toPath().resolve(fileName);
         Files.delete(filePath);
     }

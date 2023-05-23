@@ -1,6 +1,5 @@
 package com.gumi.enjoytrip.domain.user.controller;
 
-import com.gumi.enjoytrip.domain.post.dto.PostListDto;
 import com.gumi.enjoytrip.domain.post.service.PostService;
 import com.gumi.enjoytrip.domain.user.dto.*;
 import com.gumi.enjoytrip.domain.user.entity.User;
@@ -10,7 +9,6 @@ import com.gumi.enjoytrip.security.service.TokenService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
@@ -18,8 +16,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +25,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -106,7 +101,7 @@ public class UserController {
     })
     @DeleteMapping("/")
     public ResponseEntity<Void> deleteUser(@RequestParam String password) {
-        System.out.println("password: "+password);
+        System.out.println("password: " + password);
         userService.deleteUser(password, userService.getLoginUser(), passwordEncoder);
         return ResponseEntity.ok(null);
     }
@@ -164,7 +159,7 @@ public class UserController {
             // 토큰이 있는 경우
             if (tokenService.verifyToken(token)) {
                 User user = tokenService.getUserFromToken(token);
-                if(tokenService.verifyRefreshTokenOwner(token, user.getEmail())) {
+                if (tokenService.verifyRefreshTokenOwner(token, user.getEmail())) {
                     Token newToken = tokenService.generateToken(user.getEmail(), user.getRole());
                     tokenService.saveRefreshToken(user.getEmail(), newToken.getRefreshToken());
                     return ResponseEntity.ok(newToken);
