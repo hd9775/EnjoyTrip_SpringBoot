@@ -46,6 +46,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 log.info("이메일 : " + ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail());
                 log.info("권한 : " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
                 filterChain.doFilter(request, response);
+                return;
             } else {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             }
