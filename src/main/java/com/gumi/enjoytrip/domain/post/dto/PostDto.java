@@ -19,5 +19,6 @@ public class PostDto {
     private int likeCount;
     private long creatorId;
     private String creatorNickname;
+    private String creatorImage;
     private LocalDateTime createdAt;
 }
