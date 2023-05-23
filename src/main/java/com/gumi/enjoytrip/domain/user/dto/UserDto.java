@@ -8,9 +8,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class UserDto {
-	private long id;
-	private String email;
-	private String nickname;
-	private String imageFileName;
-	private String role;
+    private long id;
+    private String email;
+    private String nickname;
+    private String imageFileName;
+    private String role;
 }

@@ -178,7 +178,7 @@ public class PostController {
     })
     @GetMapping("/profile-posts/{id}")
     public List<PostListDto> getUserPosts(@RequestParam(value = "type", defaultValue = "") String type, @RequestParam(value = "page", defaultValue = "1") int page, @PathVariable(value = "id") long id) {
-        System.out.println(id+" 게시글 조회");
+        System.out.println(id + " 게시글 조회");
         return switch (type) {
             case "post" -> postService.getPostListByUser(page, id);
             case "like" -> postService.getPostListByUserLike(page, id);

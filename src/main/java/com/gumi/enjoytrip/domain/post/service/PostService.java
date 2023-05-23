@@ -117,13 +117,13 @@ public class PostService {
     @Transactional
     public Long createComment(long id, CommentCreateDto commentCreateDto, User user) {
         Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("존재하지 않는 게시글입니다."));
-       return commentRepository.save(commentCreateDto.toEntity(post, user)).getId();
+        return commentRepository.save(commentCreateDto.toEntity(post, user)).getId();
     }
 
     @Transactional
     public void deleteComment(long id, User user) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new CommentNotFoundException("존재하지 않는 댓글 입니다."));
-        if(!Objects.equals(comment.getUser().getId(), user.getId())) {
+        if (!Objects.equals(comment.getUser().getId(), user.getId())) {
             throw new InvalidUserException("작성자만 삭제할 수 있습니다.");
         }
         commentRepository.deleteById(id);

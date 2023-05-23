@@ -31,8 +31,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = extractTokenFromRequest(request);
-        if(isPermitAllRequest(request))
-        {
+        if (isPermitAllRequest(request)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -43,7 +42,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 Authentication authentication = getAuthentication(user);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 log.info("인증 성공");
-                log.info("이메일 : " + ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail());
+                log.info("이메일 : " + ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail());
                 log.info("권한 : " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
                 filterChain.doFilter(request, response);
                 return;

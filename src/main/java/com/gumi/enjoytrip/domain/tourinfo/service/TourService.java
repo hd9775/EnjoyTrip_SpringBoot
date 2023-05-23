@@ -42,8 +42,7 @@ public class TourService {
     }
 
     @Transactional(readOnly = true)
-    public PathDto getPath(int contentId, String keyword)
-    {
+    public PathDto getPath(int contentId, String keyword) {
         AttractionInfo attractionInfo = attractionInfoRepository.findByContentId(contentId).orElseThrow(() -> new NotFoundAttractionException("해당 관광지를 찾을 수 없습니다."));
         CoordinateDto startCoordinate = kakaoRestClient.getCoordinate(keyword);
         CoordinateDto endCoordinate = new CoordinateDto(attractionInfo.getLatitude(), attractionInfo.getLongitude());
