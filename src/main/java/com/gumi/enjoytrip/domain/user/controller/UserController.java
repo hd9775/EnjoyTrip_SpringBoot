@@ -78,9 +78,11 @@ public class UserController {
         return ResponseEntity.ok(null);
     }
 
+    @Operation(summary = "프로필 이미지 수정")
+    @ApiResponse(responseCode = "201", description = "프로필 이미지 수정 성공")
     @PatchMapping("/profile-image")
-    public ResponseEntity<Void> updateProfileImage(@RequestParam MultipartFile image) {
-        // TODO: 이미지 업로드
+    public ResponseEntity<Void> updateProfileImage(@RequestParam("file") MultipartFile image) {
+        userService.updateProfileImage(image, userService.getLoginUser());
         return ResponseEntity.ok(null);
     }
 
@@ -99,11 +101,13 @@ public class UserController {
     @Operation(summary = "회원탈퇴")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "회원탈퇴 성공"),
+            @ApiResponse(responseCode = "401", description = "비밀번호가 일치하지 않습니다."),
             @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없습니다.")
     })
     @DeleteMapping("/")
-    public ResponseEntity<Void> deleteUser() {
-        userService.deleteUser(userService.getLoginUser());
+    public ResponseEntity<Void> deleteUser(@RequestParam String password) {
+        System.out.println("password: "+password);
+        userService.deleteUser(password, userService.getLoginUser(), passwordEncoder);
         return ResponseEntity.ok(null);
     }
 

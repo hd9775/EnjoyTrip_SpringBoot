@@ -221,6 +221,7 @@ public class PostService {
                 likeCount,
                 post.getUser().getId(),
                 post.getUser().getNickname(),
+                post.getUser().getImageFileName(),
                 post.getCreatedAt()
         );
     }

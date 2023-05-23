@@ -16,10 +16,21 @@ import com.gumi.enjoytrip.domain.user.exception.UserNotFoundException;
 import com.gumi.enjoytrip.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -61,6 +72,18 @@ public class UserService {
     }
 
     @Transactional
+    public void updateProfileImage(MultipartFile image, User user) {
+        String saveFileName = "default.png";
+        try {
+            saveFileName = saveImageFile(image);
+            deleteProfileImage(user.getImageFileName());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        userRepository.save(user.update(User.builder().imageFileName(saveFileName).build()));
+    }
+
+    @Transactional
     public void changePassword(String password, String newPassword, User user, PasswordEncoder passwordEncoder) {
         userRepository.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
         if (!passwordEncoder.matches(password, user.getPassword())) {
@@ -70,9 +93,17 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(User user) {
+    public void deleteUser(String password, User user, PasswordEncoder passwordEncoder) {
         userRepository.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
-        userRepository.save(user.update(User.builder().isDeleted(true).email("").password("").nickname("탈퇴한 유저").build()));
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new InvalidPasswordException("비밀번호가 일치하지 않습니다.");
+        }
+        try {
+            deleteProfileImage(user.getImageFileName());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        userRepository.save(user.update(User.builder().isDeleted(true).email("").password("").nickname("탈퇴한 유저").imageFileName("default.png").build()));
     }
 
     @Transactional(readOnly = true)
@@ -121,5 +152,59 @@ public class UserService {
         SecurityContextHolder.clearContext();
         user.updateRefreshToken(null);
         userRepository.save(user);
+    }
+
+    private String generateNewFileName(String fileExtension) {
+        return UUID.randomUUID().toString() + "." + fileExtension;
+    }
+
+    private BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
+        int originalWidth = originalImage.getWidth();
+        int originalHeight = originalImage.getHeight();
+
+        // 가로 800 세로 600 비율로 조정된 크기 계산
+        int resizedWidth, resizedHeight;
+        double originalAspectRatio = (double) originalWidth / originalHeight;
+        double targetAspectRatio = (double) targetWidth / targetHeight;
+
+        if (originalAspectRatio > targetAspectRatio) {
+            resizedWidth = targetWidth;
+            resizedHeight = (int) (targetWidth / originalAspectRatio);
+        } else {
+            resizedWidth = (int) (targetHeight * originalAspectRatio);
+            resizedHeight = targetHeight;
+        }
+
+        // 리사이징
+        BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
+        resizedImage.createGraphics().drawImage(originalImage.getScaledInstance(resizedWidth, resizedHeight, BufferedImage.SCALE_SMOOTH), 0, 0, targetWidth, targetHeight, null);
+
+        return resizedImage;
+    }
+
+    private String saveImageFile(MultipartFile imageFile) throws IOException {
+        String originalFilename = imageFile.getOriginalFilename();
+        String fileExtension = StringUtils.getFilenameExtension(originalFilename);
+        String newFileName = generateNewFileName(fileExtension);
+
+        // 원본 이미지를 BufferedImage로 읽어옴
+        BufferedImage originalImage = ImageIO.read(imageFile.getInputStream());
+
+        // 가로 4 세로 3 비율로 리사이징한 BufferedImage 생성
+        BufferedImage resizedImage = resizeImage(originalImage, 400, 400);
+
+        // 저장할 파일 경로 생성
+        Path filePath = new ClassPathResource("static/profile_images").getFile().toPath().resolve(newFileName);
+
+        // 리사이징된 이미지를 파일로 저장
+        ImageIO.write(resizedImage, Objects.requireNonNull(fileExtension), filePath.toFile());
+
+        return newFileName;
+    }
+
+    private void deleteProfileImage(String fileName) throws IOException {
+        if(fileName.equals("default.png")) return;
+        Path filePath = new ClassPathResource("static/profile_images").getFile().toPath().resolve(fileName);
+        Files.delete(filePath);
     }
 }
