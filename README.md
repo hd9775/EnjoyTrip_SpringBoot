@@ -38,7 +38,7 @@ kakao.rest-api-key=카카오 REST API 키
 ## Built With / 누구랑 만들었나요?
 
 * [박세훈](https://github.com/psh3253) - 프로젝트 설계, 인증 구현, 지역별 관광지 정보, 게시판, 핫플레이스 기능 제작
-* [서현덕](https://github.com/hd9775) - 프로젝트 설계, 사용자 프로필 기능 제작, 포로젝트 발표
+* [서현덕](https://github.com/hd9775) - 프로젝트 설계, 사용자 프로필, 게시판 기능 제작, 포로젝트 발표
 
 ## Function / 기능
 + 로그인 및 회원가입
